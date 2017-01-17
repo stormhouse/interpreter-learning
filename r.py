@@ -3,8 +3,12 @@ import re
 # http://blog.csdn.net/goodboy5201314/article/details/42642149
 regex = r'(([0-9]+)|([a-z]+)|=)'
 p = re.compile(regex)
-str = 'foo = 123'
-int = '456'
+str = '''
+while true {
+    foo = 123
+    int = '456'
+}
+'''
 
 list = []
 m = p.match(str)
