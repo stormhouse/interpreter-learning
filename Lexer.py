@@ -9,15 +9,15 @@ class Lexer:
     # 0 identifier
     # 1 number
     #
-    p = re.compile('([0-9]+)|("(\\"|\\\\|\\n|[^"])*")|([a-zA-Z][a-zA-Z0-9]*)|(=)')
+    p = re.compile('([0-9]+)|("(\\"|\\\\|\\n|[^"])*")|([a-zA-Z][a-zA-Z0-9]*)|(=)|(<)|({)|(})|(\n)')
 
     def __init__(self):
         pass
 
-    def __init__(self, file):
+    def __init__(self, source_text):
         line_number = 1
         while line_number > 0:
-            line_text = file.readline()
+            line_text = source_text.readline()
             text = line_text
             if text:
                 m = self.p.search(text)
@@ -36,12 +36,14 @@ class Lexer:
 
     def add_token(self, type, token, line_number):
         if type == 0:
-            self.tokenList.append(Token.TokenNumber(token, line_number))
+            self.tokenList.append(Token.NumToken(line_number, token))
         elif type == 1:
-            self.tokenList.append(Token.TokenString(token, line_number))
+            self.tokenList.append(Token.StrToken(line_number, token))
         else:
-            self.tokenList.append(Token.TokenIdentifier(token, line_number))
+            self.tokenList.append(Token.IdToken(line_number, token))
 
+    def read(self):
+        return self.tokenList.pop()
     def __repr__(self):
         return self.tokenList
 
@@ -49,7 +51,8 @@ class Lexer:
 if __name__ == '__main__':
     try:
         lineNumber = 1
-        file = open('./var.me', 'r')
+        # file = open('./var.me', 'r')
+        file = open('./while.me', 'r')
         lexer = Lexer(file)
     finally:
         if file:

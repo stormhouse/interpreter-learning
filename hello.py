@@ -29,17 +29,17 @@ class Lexer:
             t2 = matcher.group(2)
             token = None
             if t2:
-                token = Token.TokenIdentifier(t, lineNum)
+                token = Token.IdToken(t, lineNum)
             t3 = matcher.group(3)
             if t3:
-                token = Token.TokenNumber(t, lineNum)
+                token = Token.NumToken(t, lineNum)
             t4 = matcher.group(4)
             if t4:
-                token = Token.TokenString(t, lineNum)
+                token = Token.StrToken(t, lineNum)
             pos = matcher.end()
             if token:
                 self.queue.append(token)
-        self.queue.append(Token.TokenIdentifier('\\n', lineNum))
+        self.queue.append(Token.IdToken('\\n', lineNum))
     def readCode(self, code):
         buf = io.StringIO(str)
         hasMore = True

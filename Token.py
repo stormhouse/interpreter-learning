@@ -9,52 +9,69 @@ class Token:
     EOL = '\\n'
     # EOF = Token(-1)
 
-    def __init__(self, lineNumber):
+    def __init__(self, lineNumber: int):
         self.lineNumber = lineNumber
+
     def getLineNumber(self):
         return self.lineNumber
+    def getNumber(self):
+        return ''
     def getText(self):
         return self.text
+
+    def isIdentifier(self):
+        return False
     def isNumber(self):
         return False
     def isString(self):
-        return False
-    def isIdentifier(self):
         return False
     def __repr__(self):
         # print(self.__class__.__name__)
+        text = ''
         if self.lineNumber == -1:
-            return 'EOF'
-        return str(self.text) + '    line: '+ str(self.lineNumber) + '    ' + str(self.__class__.__name__)
+            text = 'EOF'
+        elif self.text and self.text == '\n':
+            text = '\\n'
+        else:
+            text = str(self.text)
+        return text + '    line: '+ str(self.lineNumber) + '    ' + str(self.__class__.__name__)
 Token.EOF = Token(-1)
 
 
-class TokenNumber(Token):
-    def __init__(self, text, lineNumber):
+class NumToken(Token):
+    def __init__(self, lineNumber, text):
         Token.__init__(self, lineNumber)
-        self.text = text
+        self.value = text
     def isNumber(self):
         return True
+    def getText(self):
+        return str(self.value)
+    def getNumber(self):
+        return self.value
 
-class TokenString(Token):
-    def __init__(self, text, lineNumber):
+class StrToken(Token):
+    def __init__(self, lineNumber, text):
         Token.__init__(self, lineNumber)
-        self.text = text
+        self.literal = text
     def isString(self):
         return True
+    def getText(self):
+        return self.literal
 
-class TokenIdentifier(Token):
-    def __init__(self, text, lineNumber):
+class IdToken(Token):
+    def __init__(self, lineNumber, text):
         Token.__init__(self, lineNumber)
         self.text = text
     def isIdentifier(self):
         return True
+    def getText(self):
+        return self.text
 
 
 if __name__ == '__main__':
-    number = TokenNumber(123, 1)
-    string = TokenString('foo', 1)
-    identifier = TokenIdentifier('var', 1)
+    number = NumToken(123, 1)
+    string = StrToken('foo', 1)
+    identifier = IdToken('var', 1)
     print(number)
     print(string)
     print(identifier)
