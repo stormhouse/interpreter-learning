@@ -1,10 +1,11 @@
 from socket import *
 
-HOST = '127.0.0.1'
+HOST = '0.0.0.0'
 PORT = 8000
 ADDR = (HOST, PORT)
 
 s = socket(AF_INET, SOCK_STREAM)
+s.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
 s.bind(ADDR)
 s.listen(5)
 
