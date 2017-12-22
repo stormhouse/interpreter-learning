@@ -1,10 +1,10 @@
-from os import listdir
-from os.path import isfile, join
-
 from pydub import AudioSegment
 import yaml
+import os
 
-def getMs(str):
+YAML_FILE = '中级篇046.yaml'
+
+def getMillisecond(str):
   if isinstance(str, int):
     return str * 1000
   l = str.split(',')
@@ -12,7 +12,6 @@ def getMs(str):
   ms = 0
   if len(l) > 1:
     ms = int(l[1])
-
   hmsList = hms.split(':')
   while len(hmsList) < 3:
     hmsList.insert(0, 0)
@@ -22,11 +21,9 @@ def getMs(str):
   s = int(hmsList[2])
   return (h * 3600 + m * 60 + s) * 1000 + ms
 
+secondOfSilence = AudioSegment.silent(duration=1000)
 
-# 读取文件
-f = open('中级篇046.yaml', encoding="utf-8")
-
-# 导入
+f = open(YAML_FILE, encoding="utf-8")
 x = yaml.load(f)
 
 ranges = x['ranges']
@@ -38,15 +35,17 @@ index = 1
 for startEnd in ranges:
   start = startEnd['start']
   end = startEnd['end']
-  msStart = getMs(start)
-  msEnd = getMs(end)
+  msStart = getMillisecond(start)
+  msEnd = getMillisecond(end)
   r = s[msStart:msEnd]
-  # result.export(filename + '_' + start + '-' + end + '.mp3', format="mp3", bitrate="64k")
-  r.export(filename + str(index) + '.mp3', format="mp3", bitrate="64k")
+  newFilename = './temp/' + filename + str(index) + '.mp3'
+  if os.path.exists( newFilename):
+    os.remove(newFilename)
+  r.export(newFilename, format="mp3", bitrate="64k")
   index = index + 1
   if result is None:
     result = r
   else:
+    result += secondOfSilence
     result += r
-print(result)
-result.export("all.mp3", format="mp3", bitrate="64k")
+result.export('./mp3/' + filename[:-4] + '.mp3', format='mp3', bitrate='64k')
