@@ -2,7 +2,7 @@ from pydub import AudioSegment
 import yaml
 import os
 
-YAML_FILE = '中级篇046.yaml'
+YAML_FILE = 'Intermediate-001.yaml'
 
 def getMillisecond(str):
   if isinstance(str, int):
@@ -48,4 +48,4 @@ for startEnd in ranges:
   else:
     result += secondOfSilence
     result += r
-result.export('./mp3/' + filename[:-4] + '.mp3', format='mp3', bitrate='64k')
+result.export('./mp3/' + filename[-7:-4] + '.mp3', format='mp3', bitrate='64k')
