@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@types/node": "^10.5.2",
+    "babel-core": "^6.26.3",
+    "babel-types": "^6.26.0",
+    "iconv-lite": "^0.4.23",
+    "ts-node": "^7.0.0",
+    "typescript": "^2.9.2"
+  }
+}
