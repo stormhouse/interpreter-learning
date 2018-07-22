@@ -17,8 +17,9 @@ const parser = require('./parser')
   }]
   ...
 */
-const code = `123`
+// const code = `123`
+const code = `1 + 2`
 const tokens = lexer(code)
 const tree = parser(tokens)
-console.log(tokens)
+// console.log(tokens)
 console.log(tree)
