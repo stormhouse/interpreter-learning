@@ -1,5 +1,6 @@
 const lexer = require('./lexer')
 const parser = require('./parser')
+const evaluator = require('./evaluator')
 /*
 代码: 字符串
   123
@@ -20,6 +21,9 @@ const parser = require('./parser')
 // const code = `123`
 const code = `1 + 2`
 const tokens = lexer(code)
-const tree = parser(tokens)
+const trees = parser(tokens)
+const values = evaluator(trees)
+
 // console.log(tokens)
-console.log(tree)
+console.log(trees)
+console.log(values)
