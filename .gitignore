@@ -1,5 +1,4 @@
 bin/
-.idea/
 node_modules/
 __pycache__/
 .classpath
@@ -8,3 +7,5 @@ __pycache__/
 *.swp
 *.pyc
 yarn.lock
+.DS_Store
+out/
