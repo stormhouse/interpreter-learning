@@ -1,0 +1,19 @@
+<script src="./lexer/index.js"></script>
+<script src="./parser/index.js"></script>
+<script>
+// const code = `123`
+const codes = [
+  // `1`,
+  // `1 + 2`,
+  `1 + 2 + 3`,
+]
+const vv = codes.map((code) => {
+  const tokens = lexer(code)
+  console.log(tokens)
+  const trees = parser(tokens)
+  console.log(trees)
+  // const values = evaluator(trees)
+  // return values;
+})
+console.log(vv)
+</script>

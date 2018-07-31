@@ -1,5 +1,9 @@
-const isDigit = require('./isDigit')
-const isOperator = require('./isOperator')
+const isDigit = function (c) {
+  return /\d/.test(c)
+}
+const isOperator = function (c) {
+  return /[+\-*\/]/.test(c)
+}
 
 const lexer = (codes) => {
   const tokens = []

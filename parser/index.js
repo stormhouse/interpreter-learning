@@ -1,15 +1,16 @@
-const parser = (tokens) => {
+const parser = function (tokens) {
   const symbols = {}
   let tokenIndex = 0
-  const token = () => {
+  const token = function () {
     const { type, value } = tokens[tokenIndex]
     const _token = Object.create(symbols[type])
     _token.type = type
     _token.value = value
     return _token
   }
-  const advance = () => {
+  const advance = function () {
     tokenIndex++
+    console.log('tokenIndex====', tokenIndex)
     return token()
   }
   /**
@@ -18,7 +19,7 @@ const parser = (tokens) => {
    * @param {*} lbp left binding power
    * @param {*} led left denotation     中缀、后缀运算符
    */
-  const symbol = (id, nud, lbp, led) => {
+  const symbol = function (id, nud, lbp, led) {
     const sym = symbols[id] || {}
     symbols[id] = {
       lbp: sym.lbp || lbp,
@@ -26,23 +27,25 @@ const parser = (tokens) => {
       led: sym.lef || led,
     }
   }
-  const expression = (rbp) => {
+  const expression = function (rbp) {
     let _token = token()
+    let left = _token.nud(_token)
     advance()
-    if (rbp < token().lbp) {
+    while (rbp < token().lbp) {
       const t = token()
       advance()
-      _token = {
-        type: t.type,
-        left: _token,
-        right: expression(t.lbp)
-      }
+      //       led<left>)))))))))))))))))
+      left = t.led(left)
     }
-    return _token
+    return left
   }
-  const infix = (id, lbp, led) => {
-    symbol(id, null, lbp, function () {
-      debugger
+  const infix = function (id, lbp, led) {
+    symbol(id, null, lbp, function (left) {
+      return {
+        type: id,
+        left: left,
+        right: expression(this.lbp)
+      }
     })
   }
   const tree = []
@@ -50,15 +53,18 @@ const parser = (tokens) => {
   symbol(',')
 	symbol(')')
 	symbol('(end)')
-  symbol('number', (number) => number)
+  symbol('number', function (number) {
+    return number
+  })
+  // symbol('number')
   infix('+', 50)
   
 
 
   console.log(symbols)
-  while (token().type !== '(end)') {
+  // while (token().type !== '(end)') {
     tree.push(expression(0))
-  }
+  // }
   return tree
 }
 module.exports = parser

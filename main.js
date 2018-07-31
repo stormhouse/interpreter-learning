@@ -19,11 +19,17 @@ const evaluator = require('./evaluator')
   ...
 */
 // const code = `123`
-const code = `1 + 2`
-const tokens = lexer(code)
-const trees = parser(tokens)
-const values = evaluator(trees)
-
-// console.log(tokens)
-console.log(trees)
-console.log(values)
+const codes = [
+  // `1`,
+  `1 + 2`,
+  `1 + 2 + 3`,
+]
+const vv = codes.map((code) => {
+  const tokens = lexer(code)
+  console.log(tokens)
+  const trees = parser(tokens)
+  console.log(trees)
+  const values = evaluator(trees)
+  return values;
+})
+console.log(vv)
