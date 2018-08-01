@@ -2,7 +2,7 @@ const isDigit = function (c) {
   return /\d/.test(c)
 }
 const isOperator = function (c) {
-  return /[+\-*\/]/.test(c)
+  return /[+\-*\/()]/.test(c)
 }
 
 const lexer = (codes) => {

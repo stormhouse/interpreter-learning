@@ -1,6 +1,11 @@
 const evaluator = (trees) => {
   const operators = {
-    '+': (a, b) => a + b,
+    '+': (a, b) => {
+      return Number(a) + Number(b)
+    },
+    '*': (a, b) => {
+      return Number(a) * Number(b)
+    }
   }
 
   const evaluateNode = (node) => {

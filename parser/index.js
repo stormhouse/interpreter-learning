@@ -58,6 +58,7 @@ const parser = function (tokens) {
   })
   // symbol('number')
   infix('+', 50)
+  infix('*', 60)
   
 
 
