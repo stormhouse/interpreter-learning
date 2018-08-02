@@ -29,8 +29,8 @@ const parser = function (tokens) {
   }
   const expression = function (rbp) {
     let _token = token()
-    let left = _token.nud(_token)
     advance()
+    let left = _token.nud(_token)
     while (rbp < token().lbp) {
       const t = token()
       advance()
@@ -51,10 +51,18 @@ const parser = function (tokens) {
   const tree = []
 
   symbol(',')
-	symbol(')')
-	symbol('(end)')
-  symbol('number', function (number) {
+  symbol(')')
+  symbol('(end)')
+  symbol('number', (number) => {
     return number
+  })
+  symbol('(', () => {
+    const value = expression(1)
+    if (token().type !== ')') {
+      throw new Error('syntax error: no ")" to match')
+    }
+    advance()
+    return value
   })
   // symbol('number')
   infix('+', 50)
