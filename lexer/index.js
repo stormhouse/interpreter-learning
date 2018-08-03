@@ -27,7 +27,7 @@ const lexer = (codes) => {
           break
         }
       }
-      addTokens('number', char)
+      addTokens('number', parseFloat(char))
       continue
     } else if (isOperator(char)) {
       addTokens(char)

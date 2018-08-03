@@ -1,10 +1,13 @@
 const evaluator = (trees) => {
   const operators = {
     '+': (a, b) => {
-      return Number(a) + Number(b)
+      return a + b
+    },
+    '-': (a, b) => {
+      return a - b
     },
     '*': (a, b) => {
-      return Number(a) * Number(b)
+      return a * b
     }
   }
 
@@ -12,7 +15,11 @@ const evaluator = (trees) => {
     if (node.type === 'number') {
       return node.value
     } else if (operators[node.type]) {
-      return operators[node.type](evaluateNode(node.left), evaluateNode(node.right))
+      if (node.left) {
+        return operators[node.type](evaluateNode(node.left), evaluateNode(node.right))
+      } else {
+        return operators[node.type](0, evaluateNode(node.right))
+      }
     }
   }
 

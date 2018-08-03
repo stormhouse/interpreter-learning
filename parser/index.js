@@ -1,4 +1,5 @@
 const parser = function (tokens) {
+  const tree = []
   const symbols = {}
   let tokenIndex = 0
   const token = function () {
@@ -27,6 +28,32 @@ const parser = function (tokens) {
       led: sym.lef || led,
     }
   }
+  const infix = function (id, lbp, led) {
+    symbol(id, null, lbp, function (left) {
+      return {
+        type: id,
+        left: left,
+        right: expression(this.lbp)
+      }
+    })
+  }
+  const prefix = function (id, rbp) {
+    symbol(id, function ({type, value}) {
+      return {
+        type: type,
+        right: expression(rbp),
+      }
+    })
+    // function (left) {
+
+    //   debugger
+    //   return {
+    //     type: id,
+    //     // left: left,
+    //     // right: expression(this.lbp)
+    //   }
+    // })
+  }
   const expression = function (rbp) {
     let _token = token()
     advance()
@@ -39,16 +66,6 @@ const parser = function (tokens) {
     }
     return left
   }
-  const infix = function (id, lbp, led) {
-    symbol(id, null, lbp, function (left) {
-      return {
-        type: id,
-        left: left,
-        right: expression(this.lbp)
-      }
-    })
-  }
-  const tree = []
 
   symbol(',')
   symbol(')')
@@ -68,6 +85,7 @@ const parser = function (tokens) {
   infix('+', 50)
   infix('*', 60)
   
+  prefix('-', 50)
 
 
   console.log(symbols)
