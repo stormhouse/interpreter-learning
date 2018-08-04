@@ -63,6 +63,7 @@ const parser = function (tokens) {
   const expression = function (rbp) {
     let _token = token()
     advance()
+    if (typeof _token.nud !== 'function') throw new Error('Unexprected token: ' + _token.type)
     let left = _token.nud(_token)
     while (rbp < token().lbp) {
       const t = token()
@@ -95,6 +96,8 @@ const parser = function (tokens) {
         while (true) {
           args.push(expression(0))
           if (token().type === ')') {
+            break
+          } if (token().type === ',' && tokenNext().type === ')') {
             break
           }
         }
