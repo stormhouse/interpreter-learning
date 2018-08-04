@@ -25,8 +25,14 @@ const codes = [
   // `1 + 2 * 3 + 4 * 5`,
 
   // identifier
-  `now()`
-  // `max(1, 2)`
+  // `now()`
+  // `now(1)`,
+  // `now(1 + 2)`,
+  `max(1, 2)`,
+  // `max(1, 2,)`,
+  `max(1 * 2 + 3, 2)`,
+  `max(1 + 2 * 3, 2)`,
+  `max((1 + 2) * 3, 2 + 50)`,
 ]
 console.log(JSON.stringify(codes))
 const vv = codes.map((code) => {

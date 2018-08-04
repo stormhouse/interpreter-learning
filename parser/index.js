@@ -9,6 +9,13 @@ const parser = function (tokens) {
     _token.value = value
     return _token
   }
+  const tokenNext = function () {
+    const { type, value } = tokens[tokenIndex+1]
+    const _token = Object.create(symbols[type])
+    _token.type = type
+    _token.value = value
+    return _token
+  }
   const advance = function () {
     tokenIndex++
     return token()
@@ -74,7 +81,7 @@ const parser = function (tokens) {
   })
   symbol('(', () => {
     const value = expression(1)
-    if (token().type !== ')') {
+    if (token().type !== ')' && token().type !== ',') {
       throw new Error('syntax error: no ")" to match')
     }
     advance()
@@ -83,9 +90,14 @@ const parser = function (tokens) {
   symbol('identifier', ({type, value}) => {
     if (token().type === '(') {
       const args = []
-      let t = advance();
-      if (t.type === ')') {
+      if (tokenNext().type === ')') {
       } else {
+        while (true) {
+          args.push(expression(0))
+          if (token().type === ')') {
+            break
+          }
+        }
       }
       return {
         type: 'call',

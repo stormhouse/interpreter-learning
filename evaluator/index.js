@@ -1,19 +1,12 @@
 const evaluator = (trees) => {
   const operators = {
-    '+': (a, b) => {
-      return a + b
-    },
-    '-': (a, b) => {
-      return a - b
-    },
-    '*': (a, b) => {
-      return a * b
-    }
+    '+': (a, b) => a + b,
+    '-': (a, b) => a - b,
+    '*': (a, b) => a * b,
   }
   const functions = {
-    now () {
-      return new Date()
-    }
+    now: () => (new Date()),
+    max: (a, b) => Math.max(a, b),
   }
 
   const evaluateNode = (node) => {
@@ -27,7 +20,7 @@ const evaluator = (trees) => {
       }
     } else if (node.type === 'call') {
       const fn = functions[node.value]
-      return fn.apply(null, node.args)
+      return fn.apply(null, node.args.map((treeNode) => evaluateNode(treeNode)))
     }
   }
 
