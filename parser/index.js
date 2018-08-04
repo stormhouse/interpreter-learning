@@ -102,6 +102,7 @@ const parser = function (tokens) {
           }
         }
       }
+      advance()
       return {
         type: 'call',
         value: value,
