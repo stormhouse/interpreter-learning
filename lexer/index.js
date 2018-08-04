@@ -1,11 +1,14 @@
-const isDigit = function (c) {
+const isDigit = (c) => {
   return /\d/.test(c)
 }
-const isOperator = function (c) {
+const isOperator = (c) => {
   return /[+\-*\/(),]/.test(c)
 }
-const isIdentifier = function (c) {
+const isIdentifier = (c) => {
   return /[a-zA-Z_]/.test(c)
+}
+const isNonLatinCharacters = (s) => {
+  return /[^\u0000-\u007F]/.test(s);
 }
 
 const lexer = (codes) => {
@@ -37,6 +40,23 @@ const lexer = (codes) => {
         }
       }
       addTokens('number', parseFloat(char))
+      continue
+    } else if (isNonLatinCharacters(char)) {
+      while (true) {
+        const nextChar = next()
+        if (isNonLatinCharacters(nextChar)) {
+          char = char + nextChar
+        } else {
+          break
+        }
+      }
+      if (tokens.length === 0) {
+        addTokens('text', char)
+        addTokens('+') // 字符串连接
+      } else {
+        addTokens('+') // 字符串连接
+        addTokens('text', char)
+      }
       continue
     } else if (isOperator(char)) {
       addTokens(char)

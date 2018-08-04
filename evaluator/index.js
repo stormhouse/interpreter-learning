@@ -10,7 +10,7 @@ const evaluator = (trees) => {
   }
 
   const evaluateNode = (node) => {
-    if (node.type === 'number') {
+    if (node.type === 'number' || node.type === 'text') {
       return node.value
     } else if (operators[node.type]) {
       if (node.left) {

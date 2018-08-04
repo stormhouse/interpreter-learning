@@ -77,8 +77,11 @@ const parser = function (tokens) {
   symbol(',')
   symbol(')')
   symbol('(end)')
-  symbol('number', (number) => {
-    return number
+  symbol('number', (t) => {
+    return t
+  })
+  symbol('text', (t) => {
+    return t
   })
   symbol('(', () => {
     const value = expression(1)
