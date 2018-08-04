@@ -10,6 +10,11 @@ const evaluator = (trees) => {
       return a * b
     }
   }
+  const functions = {
+    now () {
+      return new Date()
+    }
+  }
 
   const evaluateNode = (node) => {
     if (node.type === 'number') {
@@ -20,6 +25,9 @@ const evaluator = (trees) => {
       } else {
         return operators[node.type](0, evaluateNode(node.right))
       }
+    } else if (node.type === 'call') {
+      const fn = functions[node.value]
+      return fn.apply(null, node.args)
     }
   }
 

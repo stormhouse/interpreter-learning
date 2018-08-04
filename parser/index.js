@@ -11,7 +11,6 @@ const parser = function (tokens) {
   }
   const advance = function () {
     tokenIndex++
-    console.log('tokenIndex====', tokenIndex)
     return token()
   }
   /**
@@ -81,10 +80,23 @@ const parser = function (tokens) {
     advance()
     return value
   })
+  symbol('identifier', ({type, value}) => {
+    if (token().type === '(') {
+      const args = []
+      let t = advance();
+      if (t.type === ')') {
+      } else {
+      }
+      return {
+        type: 'call',
+        value: value,
+        args: args,
+      }
+    }
+  })
   // symbol('number')
   infix('+', 50)
   infix('*', 60)
-  
   prefix('-', 50)
 
 

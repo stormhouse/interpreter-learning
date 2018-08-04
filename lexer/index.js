@@ -2,7 +2,10 @@ const isDigit = function (c) {
   return /\d/.test(c)
 }
 const isOperator = function (c) {
-  return /[+\-*\/()]/.test(c)
+  return /[+\-*\/(),]/.test(c)
+}
+const isIdentifier = function (c) {
+  return /[a-zA-Z_]/.test(c)
 }
 
 const lexer = (codes) => {
@@ -11,6 +14,12 @@ const lexer = (codes) => {
   let index = 0
   const next = () => {
     return codes[++index]
+  }
+  const token = () => {
+    return codes[index]
+  }
+  const tokenNext = () => {
+    return codes[index + 1]
   }
   const addTokens = (type, t) => {
     tokens.push({type: type, value: t})
@@ -31,6 +40,12 @@ const lexer = (codes) => {
       continue
     } else if (isOperator(char)) {
       addTokens(char)
+    } else if (isIdentifier(char)) {
+      let idf = char
+      while (isIdentifier(tokenNext())){
+        idf += next()
+      }
+      addTokens('identifier', idf)
     }
     next()
   }
@@ -39,10 +54,3 @@ const lexer = (codes) => {
   return tokens
 }
 module.exports = lexer
-
-// console.log(lexer('1'))
-// console.log(lexer('12'))
-// console.log(lexer('123'))
-// console.log(lexer('  123'))
-// console.log(lexer('  123 456'))
-// console.log(lexer('1 + 2'))
