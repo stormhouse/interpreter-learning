@@ -52,7 +52,6 @@ const parser = function (tokens) {
     })
     // function (left) {
 
-    //   debugger
     //   return {
     //     type: id,
     //     // left: left,
@@ -111,18 +110,30 @@ const parser = function (tokens) {
         value: value,
         args: args,
       }
+    } else if (token().type === '=') {
+      advance()
+      return {
+        type: 'assign',
+        name: value,
+        value: expression(0),
+      }
     }
+    return { type, value }
   })
   // symbol('number')
   infix('+', 50)
   infix('*', 60)
+  infix('=', 10, 11, function () {
+    console.log(arguments)
+    debugger
+  })
   prefix('-', 50)
 
 
   console.log(symbols)
-  // while (token().type !== '(end)') {
+  while (token().type !== '(end)') {
     tree.push(expression(0))
-  // }
+  }
   return tree
 }
 module.exports = parser

@@ -1,15 +1,8 @@
-const isDigit = (c) => {
-  return /\d/.test(c)
-}
-const isOperator = (c) => {
-  return /[+\-*\/(),]/.test(c)
-}
-const isIdentifier = (c) => {
-  return /[a-zA-Z_]/.test(c)
-}
-const isNonLatinCharacters = (s) => {
-  return /[^\u0000-\u007F]/.test(s);
-}
+const isDigit = (c) => /\d/.test(c)
+const isWhiteSpace = (c) => /\s/.test(c)
+const isOperator = (c) => /[+\-*\/(),=]/.test(c)
+const isIdentifier = (c) => /[a-zA-Z_]/.test(c)
+const isNonLatinCharacters = (s) => /[^\u0000-\u007F]/.test(s)
 
 const lexer = (codes) => {
   const tokens = []
@@ -27,10 +20,17 @@ const lexer = (codes) => {
   const addTokens = (type, t) => {
     tokens.push({type: type, value: t})
   }
+  let maxRecursive = 0
 
   while (index < codes.length) {
+    if (maxRecursive > 1000) {
+      throw new Error('Error: max recursive');
+    }
+    maxRecursive++
     char = codes[index]
-    if (isDigit(char)) {
+    if (isWhiteSpace(char)) {
+      next()
+    } else if (isDigit(char)) {
       while (true) {
         const nextChar = next()
         if (isDigit(nextChar)) {
@@ -40,7 +40,6 @@ const lexer = (codes) => {
         }
       }
       addTokens('number', parseFloat(char))
-      continue
     } else if (isNonLatinCharacters(char)) {
       while (true) {
         const nextChar = next()
@@ -57,17 +56,19 @@ const lexer = (codes) => {
         addTokens('+') // 字符串连接
         addTokens('text', char)
       }
-      continue
     } else if (isOperator(char)) {
       addTokens(char)
+      next()
     } else if (isIdentifier(char)) {
       let idf = char
-      while (isIdentifier(tokenNext())){
+      while (tokenNext() && isIdentifier(tokenNext())){
         idf += next()
       }
       addTokens('identifier', idf)
+      next()
+    } else {
+      throw new Error('Error: unrecognized token: ' + char)
     }
-    next()
   }
   
   addTokens('(end)')
