@@ -1,5 +1,6 @@
 <script src="./lexer/index.js"></script>
-<script src="./parser/index.js"></script>
+<!-- <script src="./parser/index.js"></script> -->
+<script src="./parser/bnf.js"></script>
 <script src="./evaluator/index.js"></script>
 <script>
 // const code = `123`
@@ -17,9 +18,9 @@ const codes = [
   // `-(1 + 2) * 3`,
 
   // infix
-  // `1 * 2 + 3`,
-  // `1 + 2 * 3`,
-  // `(1 + 2) * 3`,
+  `1 * 2 + 3`,
+  `1 + 2 * 3`,
+  `(1 + 2) * 3`,
 
   // `(1 + 2  * 3`,
   // `1 * 2 + 3`,
@@ -37,17 +38,20 @@ const codes = [
   // `max(1 + 2 * 3, 2)`,
   // `max((1 + 2) * 3, 2 + 50)`,
   // `金额：max(1, 2)元`,
-  `foo = 1 + 2
-  foo`,
-  `foo = 1 + 2
-  bar = 1 * 2
-  foo + bar`,
+
+  // 变量
+  // `foo = 1 + 2
+  // foo`,
+  // `foo = 1 + 2
+  // bar = 1 * 2
+  // foo + bar`,
 ]
 console.log(JSON.stringify(codes))
 const vv = codes.map((code) => {
   const tokens = lexer(code)
   console.log(tokens)
-  const trees = parser(tokens)
+  // const trees = parser(tokens)
+  const trees = parserByBNF(tokens)
   console.log(trees)
   const values = evaluator(trees)
   return values;
