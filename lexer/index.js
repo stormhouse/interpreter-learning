@@ -74,4 +74,5 @@ const lexer = (codes) => {
   addTokens('(end)')
   return tokens
 }
-module.exports = lexer
+export default lexer
+// module.exports = lexer

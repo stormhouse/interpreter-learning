@@ -1,6 +1,6 @@
-const lexer = require('./lexer')
-const parser = require('./parser')
-const evaluator = require('./evaluator')
+import lexer from './lexer/index.js'
+import Parser from './parser/tdop.js'
+import evaluator from './evaluator/index.js'
 /*
 代码: 字符串
   123
@@ -22,14 +22,14 @@ const evaluator = require('./evaluator')
 const codes = [
   // `1`,
   `1 + 2`,
-  `1 + 2 + 3`,
+  // `1 + 2 + 3`,
 ]
 const vv = codes.map((code) => {
   const tokens = lexer(code)
   console.log(tokens)
-  const trees = parser(tokens)
-  console.log(trees)
-  const values = evaluator(trees)
-  return values;
+  const parser = new Parser(tokens)
+  console.log(parser.toAST())
+  // const values = evaluator(trees)
+  // return values;
 })
-console.log(vv)
+// console.log(vv)

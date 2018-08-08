@@ -1,3 +1,4 @@
+import { symbolOriginal } from './symbolOriginal.js'
 const parser = function (tokens) {
   const tree = []
   const symbols = {}
@@ -27,7 +28,17 @@ const parser = function (tokens) {
    * @param {*} led left denotation     中缀、后缀运算符
    */
   const symbol = function (id, nud, lbp, led) {
-    const sym = symbols[id] || {}
+    const sym = symbols[id]
+    let s
+    if (sym) {
+
+    } else {
+      s = Object.create(symbolOriginal)
+      s.id = id
+      s.value = id
+      s.lbp = lbp
+
+    }
     symbols[id] = {
       lbp: sym.lbp || lbp,
       nud: sym.nud || nud,
@@ -136,4 +147,4 @@ const parser = function (tokens) {
   }
   return tree
 }
-module.exports = parser
+export default parser

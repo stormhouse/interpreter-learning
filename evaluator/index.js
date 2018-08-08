@@ -37,5 +37,4 @@ const evaluator = (trees) => {
   }
   return values
 }
-
-module.exports = evaluator
+export default evaluator
