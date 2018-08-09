@@ -19,16 +19,43 @@ class Parser {
       this.symbols[id] = s
       return s
     }
-    symbol(',')
-    symbol(')')
-    symbol('+', 50).led = function (left) {
-      return {
-        type: this.type,
-        left: left,
-        right: _this.expression(this.lbp),
+    const infix = (id, lbp, nud) => {
+      const s = symbol(id, lbp)
+      s.nud = nud
+      s.led = function (left) {
+        return {
+          type: this.type,
+          left: left,
+          right: _this.expression(this.lbp),
+        }
       }
     }
-    console.log(this.symbols)
+    symbol('number').nud = function (t) { return t }
+    symbol(',')
+    symbol(')')
+    symbol('(').nud = function (left) {
+      _this.advance()
+      const t = _this.expression(0)
+      if (_this.token().type !== ')') {
+        throw new Error('Error: require ")"')
+      }
+      return t
+    }
+    infix('+', 50)
+    infix('-', 50)
+    infix('*', 60)
+    infix('/', 60)
+
+    const prefix = function (id, lbp, nud) {
+      const s = symbol(id, lbp)
+      s.nud = function (t) {
+        return {
+          type: t.type,
+          right: _this.expression(lbp),
+        }
+      }
+    }
+    prefix('-')
   }
   token () {
     const _t = this.tokens[this.tokenIndex]
@@ -43,14 +70,13 @@ class Parser {
   }
   expression (lbp) {
     const token = this.token()
-    let left = token
     this.advance()
+    let left = token.nud(token)
     let i = 0
     while (lbp < this.token().lbp) {
       const tt = this.token()
       this.advance()
-      left = tt.led(token)
-      debugger
+      left = tt.led(left)
       i++
       if (i> 10000) break
     }

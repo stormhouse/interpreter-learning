@@ -20,16 +20,21 @@ import evaluator from './evaluator/index.js'
 */
 // const code = `123`
 const codes = [
-  // `1`,
-  `1 + 2`,
-  // `1 + 2 + 3`,
+  `-1`,
+  // `1 + 2`,
+  // `1 - 2`,
+  // `1 * 2 + 3`,
+  // `1 + 2 * 3`,
+  // `(1 + 2) * 3`,
 ]
 const vv = codes.map((code) => {
   const tokens = lexer(code)
   console.log(tokens)
   const parser = new Parser(tokens)
-  console.log(parser.toAST())
-  // const values = evaluator(trees)
-  // return values;
+  const trees = parser.toAST()
+  console.log((trees))
+  // console.log(JSON.stringify(trees))
+  const values = evaluator(trees)
+  return values;
 })
-// console.log(vv)
+console.log(JSON.stringify(vv))
