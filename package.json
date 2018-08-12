@@ -1,10 +1,38 @@
 {
+  "scripts": {
+    "test": "ava --color --tap"
+  },
   "dependencies": {
     "@types/node": "^10.5.2",
+    "ava": "^0.25.0",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-types": "^6.26.0",
     "iconv-lite": "^0.4.23",
     "ts-node": "^7.0.0",
     "typescript": "^2.9.2"
+  },
+  "ava": {
+    "files": [
+      "test/**/*.test.js"
+    ],
+    "source": [
+      "src/**/*.{js,jsx}",
+      "!dist/**/*"
+    ],
+    "modules": false,
+    "concurrency": 5,
+    "failFast": true,
+    "tap": true,
+    "color": true,
+    "powerAssert": true,
+    "require": [
+      "babel-register"
+    ]
+  },
+  "babel": {
+    "presets": ["@ava/stage-4"],
+    "babelrc": true,
+    "plugins": ["transform-es2015-modules-commonjs"]
   }
 }

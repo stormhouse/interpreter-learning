@@ -10,3 +10,5 @@ __pycache__/
 *.pyc
 yarn.lock
 .DS_Store
+package-lock.json
+*.rkt~

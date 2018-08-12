@@ -141,7 +141,6 @@ const parser = function (tokens) {
   prefix('-', 50)
 
 
-  console.log(symbols)
   while (token().type !== '(end)') {
     tree.push(expression(0))
   }

@@ -1,4 +1,4 @@
-import { symbolOriginal } from "./SymbolOriginal.js";
+import { symbolOriginal } from "./symbolOriginal.js";
 import Token from "./Token.js";
 
 class Parser {
@@ -34,11 +34,11 @@ class Parser {
     symbol(',')
     symbol(')')
     symbol('(').nud = function (left) {
-      _this.advance()
       const t = _this.expression(0)
       if (_this.token().type !== ')') {
         throw new Error('Error: require ")"')
       }
+      _this.advance()
       return t
     }
     infix('+', 50)
