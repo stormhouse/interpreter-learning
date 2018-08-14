@@ -36,7 +36,7 @@ class Parser {
     symbol('(').nud = function (left) {
       const t = _this.expression(0)
       if (_this.token().type !== ')') {
-        throw new Error('Error: require ")"')
+        throw new SyntaxError('SyntaxError: require ")"')
       }
       _this.advance()
       return t
@@ -56,11 +56,12 @@ class Parser {
       }
     }
     prefix('-')
+    prefix('+')
   }
   token () {
     const _t = this.tokens[this.tokenIndex]
     const o = this.symbols[_t.type]
-    const t = Object.create(o || {})
+    const t = Object.create(o || symbolOriginal)
     t.type = _t.type
     t.value = _t.value
     return t

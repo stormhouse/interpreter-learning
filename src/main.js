@@ -20,12 +20,7 @@ import evaluator from './evaluator/index.js'
 */
 // const code = `123`
 const codes = [
-  `1`,
-  `1 + 2`,
-  `1 + 2 + 3`,
-  `1 * 2 + 3`,
-  `1 + 2 * 3`,
-  `(1 + 2) * 3`,
+  `（1 + 2 * 3`,
 ]
 const vv = codes.map((code) => {
   const tokens = lexer(code)

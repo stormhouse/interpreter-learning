@@ -3,6 +3,7 @@ const evaluator = (trees) => {
     '+': (a, b) => a + b,
     '-': (a, b) => a - b,
     '*': (a, b) => a * b,
+    '/': (a, b) => a / b,
   }
   const functions = {
     now: () => (new Date()),
