@@ -1,6 +1,6 @@
 const isDigit = (c) => /\d/.test(c)
 const isWhiteSpace = (c) => /\s/.test(c)
-const isOperator = (c) => /[+\-*\/(),=]/.test(c)
+const isOperator = (c) => /[+\-*\/(),={}]/.test(c)
 const isIdentifier = (c) => /[a-zA-Z_]/.test(c)
 const isNonLatinCharacters = (s) => /[^\u0000-\u007F]/.test(s)
 

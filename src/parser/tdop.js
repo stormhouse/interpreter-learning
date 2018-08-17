@@ -1,11 +1,13 @@
 import { symbolOriginal } from "./symbolOriginal.js";
 import Token from "./Token.js";
+import Scope from "./Scope.js";
 
 class Parser {
   constructor (tokens) {
     this.tokenIndex = 0
     this.initSymbols()
     this.tokens = tokens.map((t) => new Token(t.type, t.value))
+    this.scope = new Scope(null, this.symbols)
   }
   initSymbols () {
     const _this = this
@@ -19,6 +21,29 @@ class Parser {
       this.symbols[id] = s
       return s
     }
+    const statment = (id, std) => {
+      const s = symbol(id)
+      s.std = std
+      s.nud = function () {
+        return this
+      }
+      return s
+    }
+    statment('var', function () {
+      _this.advance()
+      const idf = _this.token()
+      const assign = _this.tokenNext()
+      if (idf.type === 'identifier' && assign.type === '=' ) {
+        _this.advance()
+        _this.advance()
+        _this.scope.define(idf)
+        return {
+          type: 'assignment',
+          left: idf,
+          right: _this.expression(0),
+        }
+      }
+    })
     const infix = (id, lbp, nud) => {
       const s = symbol(id, lbp)
       s.nud = nud
@@ -58,13 +83,30 @@ class Parser {
     prefix('-')
     prefix('+')
   }
-  token () {
-    const _t = this.tokens[this.tokenIndex]
-    const o = this.symbols[_t.type]
+  token (index) {
+    const _t = this.tokens[index || this.tokenIndex]
+    /**
+     * type        value
+     * -------------------
+     * identifier  var
+     * identifier  foo
+     * number      123
+     * operator    +-/*
+     * operator    =
+     */
+    let o
+    if (_t.type === 'identifier') {
+      o = this.scope.find(_t.value)
+    } else {
+      o = this.symbols[_t.type] // TODO type (number) value
+    }
     const t = Object.create(o || symbolOriginal)
     t.type = _t.type
     t.value = _t.value
     return t
+  }
+  tokenNext () {
+    return this.token(this.tokenIndex + 1)
   }
   advance () {
     this.tokenIndex++
@@ -83,12 +125,30 @@ class Parser {
     }
     return left
   }
-  toAST () {
-    const trees = []
-    // while (this.tokens[this.tokenIndex] !== '(end)') {
-      trees.push(this.expression(0))
+  statment () {
+    let i = 0;
+    let result
+    // while (true) {
+    //   i++
+    //   if (i> 100000) break
+      const t = this.token()
+      if (t.type === 'identifier' && t.std) {
+        result = t.std()
+      } else {
+        result = this.expression(0)
+      }
     // }
+    return result
+  }
+  statments () {
+    const trees = []
+    while (this.tokens[this.tokenIndex].type !== '(end)') {
+      trees.push(this.statment())
+    }
     return trees
+  }
+  toAST () {
+    return this.statments()
   }
 }
 

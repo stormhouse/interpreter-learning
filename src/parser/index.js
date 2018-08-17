@@ -136,7 +136,6 @@ const parser = function (tokens) {
   infix('*', 60)
   infix('=', 10, 11, function () {
     console.log(arguments)
-    debugger
   })
   prefix('-', 50)
 
