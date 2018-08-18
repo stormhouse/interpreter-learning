@@ -145,10 +145,11 @@ class Parser {
     while (this.tokens[this.tokenIndex].type !== '(end)') {
       trees.push(this.statment())
     }
+    this.trees = trees
     return trees
   }
   toAST () {
-    return this.statments()
+    return this.trees ? this.trees : this.statments()
   }
 }
 
