@@ -1,3 +1,5 @@
+import { NUMBER } from "../types.js";
+
 const operators = {
   '+': function (a, b) {
     return a + b
@@ -29,7 +31,7 @@ class Executor {
       left,
       right,
     } = node
-    if (type === 'number') {
+    if (type === NUMBER) {
       return node.value
     } else if (type === 'assignment') {
       const variables = this.context.variables || {}

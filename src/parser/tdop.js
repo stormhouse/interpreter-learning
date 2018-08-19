@@ -1,6 +1,7 @@
 import { symbolOriginal } from "./symbolOriginal.js";
 import Token from "./Token.js";
 import Scope from "./Scope.js";
+import { NUMBER } from "../types.js"
 
 class Parser {
   constructor (tokens) {
@@ -55,7 +56,7 @@ class Parser {
         }
       }
     }
-    symbol('number').nud = function (t) { return t }
+    symbol(NUMBER).nud = function (t) { return t }
     symbol(',')
     symbol(')')
     symbol('(').nud = function (left) {

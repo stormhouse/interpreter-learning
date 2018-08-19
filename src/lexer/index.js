@@ -1,3 +1,5 @@
+import { NUMBER } from '../types.js'
+
 const isDigit = (c) => /\d/.test(c)
 const isWhiteSpace = (c) => /\s/.test(c)
 const isOperator = (c) => /[+\-*\/(),={}]/.test(c)
@@ -39,7 +41,7 @@ const lexer = (codes) => {
           break
         }
       }
-      addTokens('number', parseFloat(char))
+      addTokens(NUMBER, parseFloat(char))
     } else if (isNonLatinCharacters(char)) {
       while (true) {
         const nextChar = next()

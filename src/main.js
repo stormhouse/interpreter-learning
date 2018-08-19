@@ -1,6 +1,6 @@
 import lexer from './lexer/index.js'
 import Parser from './parser/tdop.js'
-import evaluator from './evaluator/index.js'
+// import evaluator from './evaluator/index.js'
 import Executor from './executor/index.js'
 /*
 代码: 字符串
@@ -23,6 +23,7 @@ import Executor from './executor/index.js'
 const codes = [
   `var foo = 1 + 2
   var bar = foo + 3
+  var baz = function () {}
   foo
   bar`,
 ]

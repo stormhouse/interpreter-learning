@@ -1,3 +1,5 @@
+import { NUMBER } from "../types";
+
 const evaluator = (trees) => {
   const operators = {
     '+': (a, b) => a + b,
@@ -12,7 +14,7 @@ const evaluator = (trees) => {
   const variables = {}
 
   const evaluateNode = (node) => {
-    if (node.type === 'number' || node.type === 'text') {
+    if (node.type === NUMBER || node.type === 'text') {
       return node.value
     } else if (operators[node.type]) {
       if (node.left) {
