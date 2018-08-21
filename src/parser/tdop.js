@@ -10,6 +10,12 @@ class Parser {
     this.tokens = tokens.map((t) => new Token(t.type, t.value))
     this.scope = new Scope(null, this.symbols)
   }
+  createScope () {
+    this.scope = new Scope(this.scope, this.symbols)
+  }
+  popScope () {
+    this.scope = this.scope.parent
+  }
   initSymbols () {
     const _this = this
     this.symbols = {}
@@ -18,7 +24,10 @@ class Parser {
       if (!s) {
         s = Object.create(symbolOriginal)
         s.lbp = lbp
+      } else {
+        s.lbp = lbp || s.lbp
       }
+
       this.symbols[id] = s
       return s
     }
@@ -45,10 +54,10 @@ class Parser {
         }
       }
     })
-    const infix = (id, lbp, nud) => {
+    const infix = (id, lbp, led) => {
       const s = symbol(id, lbp)
-      s.nud = nud
-      s.led = function (left) {
+      //s.nud = nud
+      s.led = led || function (left) {
         return {
           type: this.type,
           left: left,
@@ -71,10 +80,18 @@ class Parser {
     infix('-', 50)
     infix('*', 60)
     infix('/', 60)
+    infix('(', 80, function (t) {
+      const a = {
+        type: 'call',
+        value: t.value,
+      }
+      _this.advance()
+      return a
+    })
 
-    const prefix = function (id, lbp, nud) {
+    const prefix = function (id, nud, lbp) {
       const s = symbol(id, lbp)
-      s.nud = function (t) {
+      s.nud = nud || function (t) {
         return {
           type: t.type,
           right: _this.expression(lbp),
@@ -83,6 +100,26 @@ class Parser {
     }
     prefix('-')
     prefix('+')
+    prefix('function', function (t) {
+      _this.createScope()
+      const args = []
+      _this.expectAndAdvance('(')
+      while (true) {
+        const token = _this.token()
+        if (token.type === ')') break
+        args.push(token)
+        _this.advance()
+        if (_this.token().type === ')') break
+        _this.expectAndAdvance(',')
+      }
+      _this.advance()
+      _this.expectAndAdvance('{')
+      t.args = args
+      t.body = _this.statments()
+      _this.popScope();
+      _this.expectAndAdvance('}')
+      return t
+    })
   }
   token (index) {
     const _t = this.tokens[index || this.tokenIndex]
@@ -111,6 +148,12 @@ class Parser {
   }
   advance () {
     this.tokenIndex++
+  }
+  expectAndAdvance (id) {
+    if (id && this.token().type !== id) {
+      throw new SyntaxError('SyntasxError: expect "' + id + '"')
+    }
+    this.advance()
   }
   expression (lbp) {
     const token = this.token()
@@ -143,7 +186,7 @@ class Parser {
   }
   statments () {
     const trees = []
-    while (this.tokens[this.tokenIndex].type !== '(end)') {
+    while (this.token().type !== '(end)' && this.token().type !== '}') {
       trees.push(this.statment())
     }
     this.trees = trees

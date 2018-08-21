@@ -41,10 +41,29 @@ class Executor {
     } else if (operators[type]) {
       return operators[type](this.evaluateNode(left), this.evaluateNode(right))
     } else if (type === 'identifier') {
-      if (this.context.variables[value]) {
-        return this.context.variables[value]
+      if (value === 'function') {
+        return node
+      } else {
+        if (this.context.variables[value]) {
+          return this.context.variables[value]
+        }
       }
+    } else if (type === 'call') {
+      const f = this.context.variables[value]
+      this.createContext()
+      const vv = f.body.map((node) => this.evaluateNode(node))
+      this.popContext()
+      return vv[vv.length - 1]
     }
+  }
+  createContext () {
+    const context = {
+      parent: this.context,
+    }
+    this.context = context
+  }
+  popContext () {
+    this.context = this.context.parent
   }
 }
 export default Executor

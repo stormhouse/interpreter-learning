@@ -18,14 +18,23 @@ import Executor from './executor/index.js'
     right: { type: 'number', value: '2'},
   }]
   ...
+  `var foo = 1 + 2
+  var bar = foo + 3
+  var baz = function (a, b) {1}
+  foo
+  baz()
+  bar`,
 */
 // const code = `123`
 const codes = [
-  `var foo = 1 + 2
-  var bar = foo + 3
-  var baz = function () {}
-  foo
-  bar`,
+  `var aa = 111
+  var baz = function (a, b) {
+    var aa = 222
+    1 + 2
+    aa
+  }
+  aa
+  baz()`,
 ]
 const vv = codes.map((code) => {
   const tokens = lexer(code)
