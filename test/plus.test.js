@@ -1,22 +1,40 @@
 import test from 'ava';
 import { lpe } from '../src/index'
-test('literal', t => {
+test('literal 1', t => {
   t.deepEqual(lpe(`1`), [1])
+})
+test('literal -1', t => {
   t.deepEqual(lpe(`-1`), [-1])
+})
+test('literal +1', t => {
   t.deepEqual(lpe(`+1`), [1])
 })
-test('arithmetic', t => {
+test('arithmetic: 1 + 2', t => {
   t.deepEqual(lpe(`1 + 2`), [3])
-  t.deepEqual(lpe(`-1 + 2`), [1])
-  t.deepEqual(lpe(`-1 * 2`), [-2])
-  t.deepEqual(lpe(`-1 * -2`), [2])
-  t.deepEqual(lpe(`1 / -2`), [-0.5])
-  t.deepEqual(lpe(`-1 / -2`), [0.5])
 })
-test('优先级', t => {
+test('arithmetic: -1 + 2', t => {
+  t.deepEqual(lpe(`-1 + 2`), [1])
+})
+test('arithmetic: -1 * 2', t => {
+  t.deepEqual(lpe(`-1 * 2`), [-2])
+})
+test('arithmetic: -1 * -2', t => {
+  t.deepEqual(lpe(`-1 * -2`), [2])
+})
+test('arithmetic: -1 * -2', t => {
+  t.deepEqual(lpe(`1 / -2`), [-0.5])
+})
+
+test('arithmetic: 1 * 2 + 3', t => {
   t.deepEqual(lpe(`1 * 2 + 3`), [5])
+})
+test('arithmetic: 1 + 2 * 3', t => {
   t.deepEqual(lpe(`1 + 2 * 3`), [7])
+})
+test('arithmetic: (1 + 2) * 3', t => {
   t.deepEqual(lpe(`(1 + 2) * 3`), [9])
+})
+test('arithmetic: (1 + 2) * -3', t => {
   t.deepEqual(lpe(`(1 + 2) * -3`), [-9])
 })
 test('error', t => {

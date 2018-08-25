@@ -30,7 +30,10 @@ const lexer = (codes) => {
     }
     maxRecursive++
     char = codes[index]
-    if (isWhiteSpace(char)) {
+    if (char === '\n') {
+      addTokens('\n')
+      next()
+    } else if (isWhiteSpace(char)) {
       next()
     } else if (isDigit(char)) {
       while (true) {

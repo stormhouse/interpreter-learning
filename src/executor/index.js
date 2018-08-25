@@ -3,6 +3,15 @@ import { NUMBER } from "../types.js";
 const operators = {
   '+': function (a, b) {
     return a + b
+  },
+  '-': function (a, b) {
+    return a - b
+  },
+  '*': function (a, b) {
+    return a * b
+  },
+  '/': function (a, b) {
+    return a / b
   }
 }
 class Executor {
@@ -15,7 +24,10 @@ class Executor {
   run () {
     const results = []
     while (this.treeIndex < this.trees.length) {
-      results.push(this.execute())
+      const r = this.execute()
+      if (r !== 'stmt') {
+        results.push(r)
+      }
     }
     return results
   }
@@ -25,6 +37,9 @@ class Executor {
     return r
   }
   evaluateNode (node) {
+    if (node === undefined) {
+      return undefined // var foo
+    }
     const {
       type,
       value,
@@ -37,14 +52,19 @@ class Executor {
       const variables = this.context.variables || {}
       variables[left.value] = this.evaluateNode(right)
       this.context.variables = variables
-      return 'statments'
+      return 'stmt'
     } else if (operators[type]) {
-      return operators[type](this.evaluateNode(left), this.evaluateNode(right))
+      if (left) {
+        return operators[type](this.evaluateNode(left), this.evaluateNode(right))
+      } else {
+        return operators[type](0, this.evaluateNode(right))
+      }
     } else if (type === 'identifier') {
       if (value === 'function') {
         return node
       } else {
-        if (this.context.variables[value]) {
+        //if (this.context.variables[value]) { // var foo
+        if (this.context.variables.hasOwnProperty(value)) {
           return this.context.variables[value]
         }
       }

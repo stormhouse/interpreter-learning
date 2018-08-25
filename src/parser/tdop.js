@@ -40,19 +40,54 @@ class Parser {
       return s
     }
     statment('var', function () {
-      _this.advance()
-      const idf = _this.token()
-      const assign = _this.tokenNext()
-      if (idf.type === 'identifier' && assign.type === '=' ) {
-        _this.advance()
-        _this.advance()
-        _this.scope.define(idf)
-        return {
-          type: 'assignment',
-          left: idf,
-          right: _this.expression(0),
+      let idf
+      let assignOrComma
+      const vv = []
+      let max = 0
+      while (true) {
+        max++
+        if (max > 10000) break
+        idf = _this.token()
+        if (idf.type === '\n') {
+          _this.advance()
+          break
+        }
+        if (idf.type === ',') {
+          _this.advance()
+          continue
+        }
+        assignOrComma = _this.tokenNext()
+        if (assignOrComma.type === '\n') {
+          _this.scope.define(idf)
+          vv.push({
+            type: 'assignment',
+            left: idf,
+            //right: _this.expression(0),
+          })
+          _this.advance()
+          _this.advance()
+          break
+        }else if (assignOrComma.type === ',') {
+          _this.scope.define(idf)
+          _this.advance()
+          vv.push({
+            type: 'assignment',
+            left: idf,
+            //right: _this.expression(0),
+          })
+          _this.jumpToken(',')
+        } else if (assignOrComma.type === '=') {
+          _this.advance()
+          _this.advance()
+          _this.scope.define(idf)
+          vv.push({
+            type: 'assignment',
+            left: idf,
+            right: _this.expression(0),
+          })
         }
       }
+      return vv
     })
     const infix = (id, lbp, led) => {
       const s = symbol(id, lbp)
@@ -114,6 +149,7 @@ class Parser {
       }
       _this.advance()
       _this.expectAndAdvance('{')
+      _this.jumpToken('\n')
       t.args = args
       t.body = _this.statments()
       _this.popScope();
@@ -149,10 +185,25 @@ class Parser {
   advance () {
     this.tokenIndex++
   }
-  expectAndAdvance (id) {
-    if (id && this.token().type !== id) {
+  isToken(id) {
+    if (typeof id === 'string') {
+      return this.token().type === id
+    } else if (isArray(id)) {
+      return id.indexOf(this.token().type) > -1
+    }
+  }
+  jumpToken(id) {
+    if (this.isToken(id)) {
+      this.tokenIndex++
+    }
+  }
+  expectToken(id) {
+    if (!this.isToken(id)) {
       throw new SyntaxError('SyntasxError: expect "' + id + '"')
     }
+  }
+  expectAndAdvance (id) {
+    this.expectToken(id)
     this.advance()
   }
   expression (lbp) {
@@ -167,27 +218,32 @@ class Parser {
       i++
       if (i> 10000) break
     }
+    /*
+    if (this.isToken('\n')) { // 单行1时，没有\n
+      this.advance()
+    }*/
     return left
   }
   statment () {
     let i = 0;
     let result
-    // while (true) {
-    //   i++
-    //   if (i> 100000) break
-      const t = this.token()
-      if (t.type === 'identifier' && t.std) {
-        result = t.std()
-      } else {
-        result = this.expression(0)
+    const t = this.token()
+    //if (t.type === 'identifier' && t.std) {
+    if (t.std) {
+      this.advance()
+      result = t.std()
+    } else {
+      result = this.expression(0)
+      if (this.token().type !== '(end)') {
+        this.advance()
       }
-    // }
+    }
     return result
   }
   statments () {
-    const trees = []
+    let trees = []
     while (this.token().type !== '(end)' && this.token().type !== '}') {
-      trees.push(this.statment())
+      trees = trees.concat(this.statment())
     }
     this.trees = trees
     return trees

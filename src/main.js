@@ -27,14 +27,9 @@ import Executor from './executor/index.js'
 */
 // const code = `123`
 const codes = [
-  `var aa = 111
-  var baz = function (a, b) {
-    var aa = 222
-    1 + 2
-    aa
-  }
-  aa
-  baz()`,
+  `var foo  = 1, bar = 2
+  foo
+  bar`
 ]
 const vv = codes.map((code) => {
   const tokens = lexer(code)
@@ -46,4 +41,6 @@ const vv = codes.map((code) => {
   const result = executor.run()
   return result;
 })
+
+console.log(vv)
 console.log(JSON.stringify(vv))
