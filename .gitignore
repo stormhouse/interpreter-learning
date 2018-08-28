@@ -1,10 +1,13 @@
 bin/
+.idea/
+target/
 node_modules/
 __pycache__/
 .classpath
 .settings
 .project
 *.swp
+*.swo
 *.pyc
 yarn.lock
 .DS_Store
