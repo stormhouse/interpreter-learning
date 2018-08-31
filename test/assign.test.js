@@ -1,6 +1,6 @@
 import test from 'ava';
 import { lpe } from '../src/index'
-test(`assign:
+test(`assign------------------------------>
   var foo
   foo`,
 t => {
@@ -8,14 +8,14 @@ t => {
   foo
   `), [undefined])
 })
-test(`assign:
+test(`assign------------------------------>
   var foo = 1
   foo`,
 t => {
   t.deepEqual(lpe(`var foo = 1
   foo`), [1])
 })
-test(`assign:
+test(`assign------------------------------>
   var foo = 1
   var bar = 2
   foo
@@ -26,7 +26,7 @@ t => {
   foo
   bar`), [1, 2])
 })
-test(`assign:
+test(`assign------------------------------>
   var foo, bar
   foo
   bar`,
@@ -35,7 +35,7 @@ t => {
   foo
   bar`), [undefined, undefined])
 })
-test(`assign:
+test(`assign------------------------------>
   var foo, bar = 2
   foo
   bar`,
@@ -44,7 +44,7 @@ t => {
   foo
   bar`), [undefined, 2])
 })
-test(`assign:
+test(`assign------------------------------>
   var foo = 1, bar = 2
   foo
   bar`,

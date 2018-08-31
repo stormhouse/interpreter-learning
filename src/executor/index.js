@@ -92,6 +92,10 @@ class Executor {
     } else if (type === 'call') {
       const f = this.context.variables[value]
       this.createContext()
+      // TODO 处理形参 实参数目不一致
+      f.args.forEach((item, index) => {
+        this.context.variables[item.value] = this.evaluateNode(node.args[index])
+      })
       const vv = f.body.map((node) => this.evaluateNode(node))
       this.popContext()
       return vv[vv.length - 1]
@@ -100,6 +104,7 @@ class Executor {
   createContext () {
     const context = {
       parent: this.context,
+      variables: {},
     }
     this.context = context
   }

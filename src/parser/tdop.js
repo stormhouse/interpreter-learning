@@ -117,9 +117,22 @@ class Parser {
     infix('*', 60)
     infix('/', 60)
     infix('(', 80, function (t) {
+      let expectComma = _this.token()
+      const args = []
+      let i = 1
+      while (expectComma.type != ')') {
+        i++
+        if (i > 10000) break
+        args.push(_this.expression(0));
+        if (_this.token().type === ',') {
+          _this.advance()
+        }
+        expectComma = _this.token()
+      }
       const a = {
         type: 'call',
         value: t.value,
+        args,
       }
       _this.advance()
       return a
@@ -145,6 +158,7 @@ class Parser {
         const token = _this.tokenOriginal()
         if (token.type === ')') break
         args.push(token)
+        _this.scope.define(token)
         _this.advance()
         if (_this.token().type === ')') break
         _this.expectAndAdvance(',')
