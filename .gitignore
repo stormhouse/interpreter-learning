@@ -1,4 +1,5 @@
 bin/
+*.log
 .idea/
 out/
 node_modules/
