@@ -64,9 +64,30 @@ class Executor {
         return node
       } else {
         //if (this.context.variables[value]) { // var foo
-        if (this.context.variables.hasOwnProperty(value)) {
-          return this.context.variables[value]
+        let context = this.context
+        let varExist = false
+        let vv
+        while (true) {
+          if (context && context.variables && context.variables.hasOwnProperty(value)) {
+            vv = context.variables[value]
+            varExist = true
+            break
+          }
+          if (context && context.parent) {
+            context = context.parent
+            continue
+          } else {
+            break
+          }
         }
+        if (varExist) {
+          return vv
+        } else {
+          throw new Error('not found variable')
+        }
+        // if (this.context.variables.hasOwnProperty(value)) {
+        //   return this.context.variables[value]
+        // }
       }
     } else if (type === 'call') {
       const f = this.context.variables[value]

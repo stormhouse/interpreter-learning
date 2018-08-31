@@ -47,7 +47,8 @@ class Parser {
       while (true) {
         max++
         if (max > 10000) break
-        idf = _this.token()
+        // idf = _this.token()
+        idf = _this.tokenOriginal()
         if (idf.type === '\n') {
           _this.advance()
           break
@@ -140,7 +141,8 @@ class Parser {
       const args = []
       _this.expectAndAdvance('(')
       while (true) {
-        const token = _this.token()
+        // const token = _this.token()
+        const token = _this.tokenOriginal()
         if (token.type === ')') break
         args.push(token)
         _this.advance()
@@ -157,6 +159,9 @@ class Parser {
       return t
     })
   }
+  tokenOriginal () {
+    return this.tokens[this.tokenIndex]
+  }
   token (index) {
     const _t = this.tokens[index || this.tokenIndex]
     /**
@@ -170,7 +175,18 @@ class Parser {
      */
     let o
     if (_t.type === 'identifier') {
-      o = this.scope.find(_t.value)
+      let scope = this.scope
+      while (true) {
+        o = scope.find(_t.value)
+        if (o) break
+        if (scope.parent) {
+          scope = scope.parent
+          continue
+        } else {
+          break
+        }
+      }
+      if (!o) throw new Error('not define', + _t.value)
     } else {
       o = this.symbols[_t.type] // TODO type (number) value
     }
