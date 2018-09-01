@@ -1,6 +1,6 @@
 import test from 'ava';
 import { lpe } from '../src/index'
-test(`function arguments ----------------
+test(`function parameter ----------------
   var bar = function (a, b) {
     a
   }
@@ -11,7 +11,7 @@ t => {
   }
   bar(1)`), [1])
 })
-test(`function arguments ----------------
+test(`function parameter ----------------
   var bar = function (a, b) {
     a + b
   }
@@ -50,4 +50,17 @@ test('function: variable search in parent context', t => {
   aa
   baz()`), [111, 111])
 })
-
+test(`function: actual parameter is a variable------------------
+  var aa = 111
+  var bb = 222
+  var baz = function (a, b) {
+    a + b
+  }
+  baz(aa, bb)`, t => {
+  t.deepEqual(lpe(`var aa = 111
+  var bb = 222
+  var baz = function (a, b) {
+    a + b
+  }
+  baz(aa, bb)`), [333])
+})
