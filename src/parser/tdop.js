@@ -1,12 +1,14 @@
 import { symbolOriginal } from "./symbolOriginal.js";
 import Token from "./Token.js";
 import Scope from "./Scope.js";
-import { NUMBER } from "../types.js"
+import { IDENTIFIER, LITERAL, NUMBER } from '../types.js'
 
 class Parser {
   constructor (tokens) {
     this.tokenIndex = 0
+    this.symbols = {}
     this.initSymbols()
+    this.initLiteral()
     this.tokens = tokens.map((t) => new Token(t.type, t.value))
     this.scope = new Scope(null, this.symbols)
   }
@@ -16,23 +18,34 @@ class Parser {
   popScope () {
     this.scope = this.scope.parent
   }
+  symbol (id, lbp) {
+    let s = this.symbols[id]
+    if (!s) {
+      s = Object.create(symbolOriginal)
+      s.lbp = lbp
+    } else {
+      s.lbp = lbp || s.lbp
+    }
+
+    this.symbols[id] = s
+    return s
+  }
+  initLiteral () {
+    const constant = (id, value) => {
+      const c = this.symbol(id)
+      c.value = value
+      c.nud = function () {
+        return this
+      }
+      return c
+    }
+    constant('true', true)
+    constant('false', false)
+  }
   initSymbols () {
     const _this = this
-    this.symbols = {}
-    const symbol = (id, lbp) => {
-      let s = this.symbols[id]
-      if (!s) {
-        s = Object.create(symbolOriginal)
-        s.lbp = lbp
-      } else {
-        s.lbp = lbp || s.lbp
-      }
-
-      this.symbols[id] = s
-      return s
-    }
     const statment = (id, std) => {
-      const s = symbol(id)
+      const s = this.symbol(id)
       s.std = std
       s.nud = function () {
         return this
@@ -91,7 +104,7 @@ class Parser {
       return vv
     })
     const infix = (id, lbp, led) => {
-      const s = symbol(id, lbp)
+      const s = this.symbol(id, lbp)
       //s.nud = nud
       s.led = led || function (left) {
         return {
@@ -101,10 +114,10 @@ class Parser {
         }
       }
     }
-    symbol(NUMBER).nud = function (t) { return t }
-    symbol(',')
-    symbol(')')
-    symbol('(').nud = function (left) {
+    this.symbol(NUMBER).nud = function (t) { return t }
+    this.symbol(',')
+    this.symbol(')')
+    this.symbol('(').nud = function (left) {
       const t = _this.expression(0)
       if (_this.token().type !== ')') {
         throw new SyntaxError('SyntaxError: require ")"')
@@ -138,8 +151,8 @@ class Parser {
       return a
     })
 
-    const prefix = function (id, nud, lbp) {
-      const s = symbol(id, lbp)
+    const prefix = (id, nud, lbp) => {
+      const s = this.symbol(id, lbp)
       s.nud = nud || function (t) {
         return {
           type: t.type,
@@ -178,6 +191,10 @@ class Parser {
   }
   token (index) {
     const _t = this.tokens[index || this.tokenIndex]
+    const {
+      type,
+      value,
+    } = _t
     /**
      * type        value
      * -------------------
@@ -188,7 +205,9 @@ class Parser {
      * operator    =
      */
     let o
-    if (_t.type === 'identifier') {
+    if (type === LITERAL) {
+      o = this.symbols[value] // TODO type (number) value
+    } else if (type === IDENTIFIER) {
       let scope = this.scope
       while (true) {
         o = scope.find(_t.value)

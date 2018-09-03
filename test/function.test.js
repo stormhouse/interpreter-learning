@@ -64,3 +64,26 @@ test(`function: actual parameter is a variable------------------
   }
   baz(aa, bb)`), [333])
 })
+/*
+test(`function: closure------------------
+  var foo = function () {
+    var a = 1
+    var b = function () {
+      a
+    }
+    b
+  }
+  var z = foo()
+  z()
+`, t => {
+  t.deepEqual(lpe(`var foo = function () {
+    var a = 1
+    var b = function () {
+      a
+    }
+    b
+  }
+  var z = foo()
+  z()`), [333])
+})
+*/

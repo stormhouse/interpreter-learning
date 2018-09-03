@@ -27,12 +27,18 @@ import Executor from './executor/index.js'
 */
 // const code = `123`
 const codes = [
-  `var aa = 111
-  var bb = 222
-  var baz = function (a, b) {
-    a + b
-  }
-  baz(aa, bb)`
+  // `var foo = function () {
+  //   var a = 1
+  //   var b = function () {
+  //     a
+  //   }
+  //   b
+  // }
+  // var z = foo()
+  // z()`
+  //`var foo = true
+  //foo`
+  'false'
 ]
 const vv = codes.map((code) => {
   const tokens = lexer(code)

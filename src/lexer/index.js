@@ -1,10 +1,11 @@
-import { NUMBER } from '../types.js'
+import { IDENTIFIER, LITERAL, NUMBER } from '../types.js'
 
 const isDigit = (c) => /\d/.test(c)
 const isWhiteSpace = (c) => /\s/.test(c)
 const isOperator = (c) => /[+\-*\/(),={}]/.test(c)
 const isIdentifier = (c) => /[a-zA-Z_]/.test(c)
 const isNonLatinCharacters = (s) => /[^\u0000-\u007F]/.test(s)
+const literals = ['true', 'false']
 
 const lexer = (codes) => {
   const tokens = []
@@ -69,13 +70,17 @@ const lexer = (codes) => {
       while (tokenNext() && isIdentifier(tokenNext())){
         idf += next()
       }
-      addTokens('identifier', idf)
+      if (literals.indexOf(idf) > -1) {
+        addTokens(LITERAL, idf)
+      } else {
+        addTokens(IDENTIFIER, idf)
+      }
       next()
     } else {
       throw new Error('Error: unrecognized token: ' + char)
     }
   }
-  
+
   addTokens('(end)')
   return tokens
 }

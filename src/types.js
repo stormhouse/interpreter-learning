@@ -1,3 +1,5 @@
 export const NUMBER = 'number'
 export const ASSIGNMENT = 'assignment'
 export const FUNCTION = 'function'
+export const LITERAL = 'literal'
+export const IDENTIFIER = 'identifier'

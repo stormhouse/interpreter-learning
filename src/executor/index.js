@@ -1,4 +1,4 @@
-import { NUMBER } from "../types.js";
+import { NUMBER, LITERAL } from "../types.js";
 
 const operators = {
   '+': function (a, b) {
@@ -13,6 +13,10 @@ const operators = {
   '/': function (a, b) {
     return a / b
   }
+}
+const literals = {
+  'true': true,
+  'false': false,
 }
 class Executor {
   constructor (parser) {
@@ -46,7 +50,9 @@ class Executor {
       left,
       right,
     } = node
-    if (type === NUMBER) {
+    if (type === LITERAL) {
+      return literals[node.value]
+    } else if (type === NUMBER) {
       return node.value
     } else if (type === 'assignment') {
       const variables = this.context.variables || {}
