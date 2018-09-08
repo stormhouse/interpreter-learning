@@ -1,3 +1,4 @@
+interpreter.iml
 *.rkt~
 bin/
 .idea/

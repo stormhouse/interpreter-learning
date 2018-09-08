@@ -1,5 +1,8 @@
 package io.github.stormhouse;
 
+import io.github.stormhouse.lexer.Scanner;
+import io.github.stormhouse.lexer.Token;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
