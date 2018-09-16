@@ -1,6 +1,8 @@
 package io.github.stormhouse.lexer;
 
 
+import static io.github.stormhouse.Util.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +22,79 @@ public class Scanner {
     }
     public List<Token> scanTokens () {
         while (!isAtEnd()) {
-            this.current++;
-            this.tokens.add(new Token(NUMBER, "d", new Object(), 2));
+            char c = this.advance();
+            switch (c) {
+                case '+': addToken(PLUS); break;
+                case '-': addToken(MINUS); break;
+                case '*': addToken(STAR); break;
+                case '/':
+                    if (match('/')) {
+                        while (peek() != '\n') { advance();}
+                        addToken(COMMENT);
+                    } else {
+                        addToken(SLASH);
+                    }
+                case '\'':
+                    string();
+                case '\n': this.line++; break;
+                case ' ':
+                case '\t':
+                case '\r':
+                    break;
+                default:
+                    if (isDigit(c)) {
+                        number(c);
+                    }
+            }
+            this.start = this.current;
         }
-        this.tokens.add(new Token(EOF, "d", new Object(), 2));
+        addToken(EOF);
         return this.tokens;
+    }
+    private void addToken(TokenType type) {
+        String lexeme = this.rawCode.substring(this.start, this.current);
+        this.tokens.add(new Token(type, lexeme, null, this.line));
+    }
+    private void number (char c) {
+        while (isDigit(peek())) advance();
+
+        if (peek() == '.' && isDigit(peekNext())) {
+            advance();
+            while (isDigit(peek())) advance();
+        }
+
+        addToken(NUMBER);
+    }
+    private void string () {
+        while (peek() != '\'') advance();
+
+        advance();
+        addToken(STRING);
+    }
+    private char advance () {
+        char c = this.rawCode.charAt(this.current);
+        this.current++;
+        return c;
+    }
+    private boolean match (char expectChar) {
+        if (isAtEnd()) return false;
+        char c = this.rawCode.charAt(this.current);
+        if (c == expectChar) {
+            this.current++;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    private char peek () {
+        if (isAtEnd()) return '\0';
+        return this.rawCode.charAt(this.current);
+    }
+    private char peekNext () {
+        if (isAtEnd() || this.current + 1 >= this.rawCode.length()) return '\0';
+
+        char c = this.rawCode.charAt(this.current + 1);
+        return c;
     }
     private boolean isAtEnd () {
         return this.current >= this.rawCode.length();
