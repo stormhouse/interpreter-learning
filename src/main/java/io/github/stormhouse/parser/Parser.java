@@ -26,12 +26,34 @@ public class Parser {
         Expr expr = addition();
         return expr;
     }
+    // + -
     private Expr addition () {
         Expr expr = multiplication();
+        while (match(PLUS, MINUS)) {
+            Token op = previous();
+            Expr b = new Expr.Binary(
+                    expr,
+                    op,
+                    multiplication()
+                    );
+            expr = b;
+        }
         return expr;
     }
+    // * /
     private Expr multiplication () {
         Expr expr = unary();
+        while (match(STAR, SLASH)) {
+            Token operator = previous();
+            Expr right = unary();
+            Expr b = new Expr.Binary(
+                    expr,
+                    operator,
+                    right
+            );
+            expr = b;
+
+        }
         return expr;
     }
     private Expr unary () {
@@ -45,14 +67,22 @@ public class Parser {
         }
         return null;
     }
+    private void advance () {
+        this.current++;
+    }
     private Token previous () {
         return this.tokens.get(this.current - 1);
     }
-    private boolean match (TokenType type) {
-        Token t = this.tokens.get(this.current);
-        if (type == t.type) {
-            return true;
+    private boolean match (TokenType... types) {
+        Token token = this.tokens.get(this.current);
+        boolean flag = false;
+        for (TokenType t : types) {
+            if (t == token.type) {
+                advance();
+                flag = true;
+                break;
+            }
         }
-        return false;
+        return flag;
     }
 }

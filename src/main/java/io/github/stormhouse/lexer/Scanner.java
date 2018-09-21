@@ -36,6 +36,7 @@ public class Scanner {
                     } else {
                         addToken(SLASH);
                     }
+                    break;
                 case '\'':
                     string();
                 case '\n': this.line++; break;
@@ -45,7 +46,7 @@ public class Scanner {
                     break;
                 default:
                     if (isDigit(c)) {
-                        number(c);
+                        number(c); break;
                     }
                     if (isAlphabet(c)) {
                         identifier();
