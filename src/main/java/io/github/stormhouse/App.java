@@ -1,7 +1,9 @@
 package io.github.stormhouse;
 
+import io.github.stormhouse.ast.Expr;
 import io.github.stormhouse.lexer.Scanner;
 import io.github.stormhouse.lexer.Token;
+import io.github.stormhouse.parser.Parser;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,5 +26,8 @@ public class App {
         for (Token t : tokens) {
             System.out.println(t);
         }
+        Parser parser = new Parser(tokens);
+        Expr expr = parser.expression();
+
     }
 }

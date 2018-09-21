@@ -1,6 +1,8 @@
 package io.github.stormhouse.lexer;
 
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
+
 import static io.github.stormhouse.Util.*;
 
 import java.util.ArrayList;
@@ -45,6 +47,9 @@ public class Scanner {
                     if (isDigit(c)) {
                         number(c);
                     }
+                    if (isAlphabet(c)) {
+                        identifier();
+                    }
             }
             this.start = this.current;
         }
@@ -53,7 +58,17 @@ public class Scanner {
     }
     private void addToken(TokenType type) {
         String lexeme = this.rawCode.substring(this.start, this.current);
-        this.tokens.add(new Token(type, lexeme, null, this.line));
+        if (type == IDENTIFIER) {
+            switch (lexeme) {
+                case "true":
+                    this.tokens.add(new Token(TRUE, lexeme, null, this.line));
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            this.tokens.add(new Token(type, lexeme, null, this.line));
+        }
     }
     private void number (char c) {
         while (isDigit(peek())) advance();
@@ -70,6 +85,11 @@ public class Scanner {
 
         advance();
         addToken(STRING);
+    }
+    private void identifier () {
+        while (isAlphabet(peek())) advance();
+
+        addToken(IDENTIFIER);
     }
     private char advance () {
         char c = this.rawCode.charAt(this.current);

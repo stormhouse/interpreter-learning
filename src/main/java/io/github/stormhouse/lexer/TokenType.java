@@ -6,6 +6,7 @@ public enum TokenType {
     PLUS, MINUS, STAR, SLASH,
 
     IDENTIFIER,
+    TRUE,
     STRING,
     NUMBER,
 
