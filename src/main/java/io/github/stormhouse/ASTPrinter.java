@@ -7,9 +7,16 @@ import static io.github.stormhouse.lexer.TokenType.*;
 public class ASTPrinter implements Expr.Visitor<String>{
     public static void main (String[] args) {
         Expr expression = new Expr.Binary(
-                new Expr.Literal(1),
+                new Expr.Unary(
+                        new Token(MINUS, "-", null, 1),
+                        new Expr.Literal(1)
+                ),
                 new Token(PLUS, "-", null, 1),
-                new Expr.Literal(1)
+                new Expr.Binary(
+                        new Expr.Literal(2),
+                        new Token(STAR, "*", null, 1),
+                        new Expr.Literal(3)
+                )
         );
         System.out.println(new ASTPrinter().print(expression));
     }
