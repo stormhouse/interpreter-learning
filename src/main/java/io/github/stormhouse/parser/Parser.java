@@ -1,9 +1,11 @@
 package io.github.stormhouse.parser;
 
 import io.github.stormhouse.ast.Expr;
+import io.github.stormhouse.ast.Stmt;
 import io.github.stormhouse.lexer.Token;
 import io.github.stormhouse.lexer.TokenType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.stormhouse.lexer.Token.*;
@@ -14,6 +16,29 @@ public class Parser {
     private List<Token> tokens;
     public Parser (List<Token> tokens) {
         this.tokens = tokens;
+    }
+    public List<Stmt> parse () {
+        this.current = 0;
+        List<Stmt> stmts = new ArrayList<Stmt>();
+        while (!isAtEnd()) {
+            stmts.add(statement());
+        }
+        return stmts;
+    }
+    private Stmt statement () {
+        if (match(PRINT)) {
+            return printStatement();
+        }
+        return expressionStatement();
+    }
+    private Stmt printStatement () {
+        Stmt stmt = new Stmt.Print(expression());
+        consume(SEMICOLON, "expect ;");
+        return stmt;
+    }
+    private Stmt expressionStatement () {
+        Stmt stmt = new Stmt.Expression(expression());
+        return stmt;
     }
     public Expr expression () {
         return equality();
@@ -62,12 +87,12 @@ public class Parser {
     }
     private Expr primary () {
         if (match(TRUE)) return new Expr.Literal("true");
-        if (match(NUMBER)) {
+        if (match(NUMBER, STRING)) {
             return new Expr.Literal(previous().literal);
         }
         if (match(LEFT_PAREN)) {
             Expr expr = expression();
-            consume(RIGHT_PAREN);
+            consume(RIGHT_PAREN, "");
             return expr;
 //            return new Expr.Grouping(expr);
         }
@@ -76,7 +101,7 @@ public class Parser {
     private void advance () {
         this.current++;
     }
-    private void consume (TokenType type) {
+    private void consume (TokenType type, String errorMessage) {
         if (!match(type)) {
             throw new Error("expect: " + type.toString());
         }
@@ -95,5 +120,9 @@ public class Parser {
             }
         }
         return flag;
+    }
+    private boolean isAtEnd () {
+        // EOF
+        return this.current >= this.tokens.size() - 1;
     }
 }

@@ -26,6 +26,7 @@ public class Scanner {
         while (!isAtEnd()) {
             char c = this.advance();
             switch (c) {
+                case ';': addToken(SEMICOLON); break;
                 case '(': addToken(LEFT_PAREN); break;
                 case ')': addToken(RIGHT_PAREN); break;
                 case '+': addToken(PLUS); break;
@@ -66,12 +67,19 @@ public class Scanner {
                 case "true":
                     this.tokens.add(new Token(TRUE, lexeme, null, this.line));
                     break;
+                case "print":
+                    this.tokens.add(new Token(PRINT, lexeme, null, this.line));
+                    break;
                 default:
                     break;
             }
         } else {
             this.tokens.add(new Token(type, lexeme, lexeme, this.line));
         }
+    }
+    private void addToken(TokenType type, Object literal) {
+        String lexeme = this.rawCode.substring(this.start, this.current);
+        this.tokens.add(new Token(type, lexeme, literal, this.line));
     }
     private void number (char c) {
         while (isDigit(peek())) advance();
@@ -81,7 +89,7 @@ public class Scanner {
             while (isDigit(peek())) advance();
         }
 
-        addToken(NUMBER);
+        addToken(NUMBER, Double.parseDouble(lexeme()));
     }
     private void string () {
         while (peek() != '\'') advance();
@@ -118,6 +126,9 @@ public class Scanner {
 
         char c = this.rawCode.charAt(this.current + 1);
         return c;
+    }
+    private String lexeme () {
+        return this.rawCode.substring(this.start, this.current);
     }
     private boolean isAtEnd () {
         return this.current >= this.rawCode.length();

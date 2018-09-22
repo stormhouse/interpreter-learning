@@ -15,6 +15,10 @@ public class GenerateAST {
                 "Literal  : Object value",
                 "Unary    : Token operator, Expr right"
         ));
+        defineAST(outputDir, "Stmt", Arrays.asList(
+                "Expression : Expr expr",
+                "Print : Expr expr"
+        ));
     }
     static void defineAST (String outputDir, String baseName, List<String> types)
             throws FileNotFoundException, UnsupportedEncodingException {
