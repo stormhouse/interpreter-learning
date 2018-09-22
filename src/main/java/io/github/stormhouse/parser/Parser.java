@@ -63,7 +63,7 @@ public class Parser {
     private Expr primary () {
         if (match(TRUE)) return new Expr.Literal("true");
         if (match(NUMBER)) {
-            return new Expr.Literal(previous());
+            return new Expr.Literal(previous().literal);
         }
         if (match(LEFT_PAREN)) {
             Expr expr = expression();

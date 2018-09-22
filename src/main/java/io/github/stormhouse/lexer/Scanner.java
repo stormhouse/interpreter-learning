@@ -70,7 +70,7 @@ public class Scanner {
                     break;
             }
         } else {
-            this.tokens.add(new Token(type, lexeme, null, this.line));
+            this.tokens.add(new Token(type, lexeme, lexeme, this.line));
         }
     }
     private void number (char c) {

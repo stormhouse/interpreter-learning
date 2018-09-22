@@ -1,4 +1,4 @@
-package io.github.stormhouse;
+package io.github.stormhouse.ast;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

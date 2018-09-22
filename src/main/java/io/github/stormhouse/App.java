@@ -1,6 +1,7 @@
 package io.github.stormhouse;
 
 import io.github.stormhouse.ast.Expr;
+import io.github.stormhouse.interpretor.Executor;
 import io.github.stormhouse.lexer.Scanner;
 import io.github.stormhouse.lexer.Token;
 import io.github.stormhouse.parser.Parser;
@@ -27,8 +28,13 @@ public class App {
             System.out.print(t.lexeme + "  ");
             System.out.println(t.type.toString());
         }
+
         Parser parser = new Parser(tokens);
         Expr expr = parser.expression();
+
+        Executor executor = new Executor();
+        Object result = executor.execute(expr);
+
         String s = "";
 
     }

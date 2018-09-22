@@ -1,6 +1,5 @@
-package io.github.stormhouse;
+package io.github.stormhouse.ast;
 
-import io.github.stormhouse.ast.Expr;
 import io.github.stormhouse.lexer.Token;
 import static io.github.stormhouse.lexer.TokenType.*;
 
