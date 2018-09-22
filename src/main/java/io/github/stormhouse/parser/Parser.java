@@ -65,10 +65,21 @@ public class Parser {
         if (match(NUMBER)) {
             return new Expr.Literal(previous());
         }
+        if (match(LEFT_PAREN)) {
+            Expr expr = expression();
+            consume(RIGHT_PAREN);
+            return expr;
+//            return new Expr.Grouping(expr);
+        }
         return null;
     }
     private void advance () {
         this.current++;
+    }
+    private void consume (TokenType type) {
+        if (!match(type)) {
+            throw new Error("expect: " + type.toString());
+        }
     }
     private Token previous () {
         return this.tokens.get(this.current - 1);

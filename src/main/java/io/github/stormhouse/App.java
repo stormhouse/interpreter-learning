@@ -24,7 +24,8 @@ public class App {
         Scanner scanner = new Scanner(rawCode);
         List<Token> tokens = scanner.scanTokens();
         for (Token t : tokens) {
-            System.out.println(t);
+            System.out.print(t.lexeme + "  ");
+            System.out.println(t.type.toString());
         }
         Parser parser = new Parser(tokens);
         Expr expr = parser.expression();

@@ -26,6 +26,8 @@ public class Scanner {
         while (!isAtEnd()) {
             char c = this.advance();
             switch (c) {
+                case '(': addToken(LEFT_PAREN); break;
+                case ')': addToken(RIGHT_PAREN); break;
                 case '+': addToken(PLUS); break;
                 case '-': addToken(MINUS); break;
                 case '*': addToken(STAR); break;
