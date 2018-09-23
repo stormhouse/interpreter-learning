@@ -73,7 +73,18 @@ public class Parser {
         return stmt;
     }
     public Expr expression () {
-        return equality();
+        return assignment();
+    }
+    public Expr assignment () {
+        Expr expr = equality();
+        if (match(EQUAL)) {
+            Expr value = assignment();
+            if (expr instanceof Expr.Variable) {
+                expr = new Expr.Assign(((Expr.Variable) expr).name, value);
+                consume(SEMICOLON, "require ; at the end of assign expression");
+            }
+        }
+        return expr;
     }
     private Expr equality () {
         Expr expr = comparison();

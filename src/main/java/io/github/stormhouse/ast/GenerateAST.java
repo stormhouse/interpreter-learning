@@ -14,13 +14,14 @@ public class GenerateAST {
                 "Grouping : Expr expression",
                 "Literal  : Object value",
                 "Unary    : Token operator, Expr right",
+                "Assign     : Token name, Expr right",
                 "Variable : Token name"
         ));
         defineAST(outputDir, "Stmt", Arrays.asList(
-                "Block : List<Stmt> stmts",
+                "Block      : List<Stmt> stmts",
                 "Expression : Expr expr",
-                "Var : Token token, Expr expr",
-                "Print : Expr expr"
+                "Var        : Token token, Expr expr",
+                "Print      : Expr expr"
         ));
     }
     static void defineAST (String outputDir, String baseName, List<String> types)

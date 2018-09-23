@@ -54,6 +54,27 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     }
 
     @Override
+    public Object visitAssignExpr(Expr.Assign expr) {
+        Token name = expr.name;
+        Object value = execute(expr.right);
+//        this.context.define(name.lexeme, value);
+        Context ctx = this.context;
+        Object oldValue = null;
+        while (ctx != null) {
+            oldValue = ctx.get(name.lexeme);
+            if (oldValue == null) {
+                ctx = ctx.getParent();
+            } else {
+                break;
+            }
+        }
+        if (oldValue != null) {
+            ctx.define(name.lexeme, value);
+        }
+        return value;
+    }
+
+    @Override
     public Object visitVariableExpr(Expr.Variable expr) {
         Token name = expr.name;
         Context ctx = this.context;
@@ -87,7 +108,8 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     public Object visitExpressionStmt(Stmt.Expression stmt) {
         Expr expr = stmt.expr;
         System.out.println(expr);
-        return expr;
+        return execute(expr);
+//        return expr;
     }
 
     @Override
