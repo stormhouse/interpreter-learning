@@ -60,6 +60,20 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     }
 
     @Override
+    public Object visitBlockStmt(Stmt.Block stmt) {
+        List<Stmt> stmts = stmt.stmts;
+        Context previous = this.context;
+        // enter new block context --------------
+        this.context = new Context();
+        for (Stmt s : stmts) {
+            execute(s);
+        }
+        // exit block context -------------------
+        this.context = previous;
+        return null;
+    }
+
+    @Override
     public Object visitExpressionStmt(Stmt.Expression stmt) {
         Expr expr = stmt.expr;
         System.out.println(expr);

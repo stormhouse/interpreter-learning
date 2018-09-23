@@ -36,6 +36,7 @@ public class App {
 
         Executor executor = new Executor();
 //        Object result = executor.execute(expr);
+        System.out.println("------------------------");
         executor.interpret(stmts);
 
         String s = "";

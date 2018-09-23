@@ -1,12 +1,24 @@
 package io.github.stormhouse.ast;
 
+import java.util.List;
+
 import io.github.stormhouse.lexer.Token;
 
 public abstract class Stmt {
     public interface Visitor<R> {
+        R visitBlockStmt (Block stmt);
         R visitExpressionStmt (Expression stmt);
         R visitVarStmt (Var stmt);
         R visitPrintStmt (Print stmt);
+    }
+    public static class Block extends Stmt {
+        public Block(List<Stmt> stmts) {
+            this.stmts = stmts;
+        }
+        public <R> R accept (Visitor<R> visitor) {
+            return visitor.visitBlockStmt(this);
+        }
+        public final List<Stmt> stmts;
     }
     public static class Expression extends Stmt {
         public Expression(Expr expr) {

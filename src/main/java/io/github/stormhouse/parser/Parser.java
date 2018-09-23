@@ -48,7 +48,20 @@ public class Parser {
         if (match(PRINT)) {
             return printStatement();
         }
+        if (match(LEFT_BRACE)) {
+            return new Stmt.Block(block());
+        }
         return expressionStatement();
+    }
+    private List<Stmt> block () {
+        List<Stmt> stmts = new ArrayList<>();
+        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+            Stmt stmt = declaration();
+            stmts.add(stmt);
+        }
+        consume(RIGHT_BRACE, "require } at the end of block");
+
+        return stmts;
     }
     private Stmt printStatement () {
         Stmt stmt = new Stmt.Print(expression());
@@ -131,17 +144,23 @@ public class Parser {
     private Token previous () {
         return this.tokens.get(this.current - 1);
     }
-    private boolean match (TokenType... types) {
+    private boolean check (TokenType... types) {
         Token token = this.tokens.get(this.current);
         boolean flag = false;
         for (TokenType t : types) {
             if (t == token.type) {
-                advance();
                 flag = true;
                 break;
             }
         }
         return flag;
+    }
+    private boolean match (TokenType... types) {
+        boolean b = check(types);
+        if (b) {
+            advance();
+        }
+        return b;
     }
     private boolean isAtEnd () {
         // EOF

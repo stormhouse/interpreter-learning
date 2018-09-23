@@ -17,6 +17,7 @@ public class GenerateAST {
                 "Variable : Token name"
         ));
         defineAST(outputDir, "Stmt", Arrays.asList(
+                "Block : List<Stmt> stmts",
                 "Expression : Expr expr",
                 "Var : Token token, Expr expr",
                 "Print : Expr expr"
@@ -27,6 +28,8 @@ public class GenerateAST {
         String path = outputDir + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
         writer.println("package io.github.stormhouse.ast;");
+        writer.println("");
+        writer.println("import java.util.List;");
         writer.println("");
         writer.println("import io.github.stormhouse.lexer.Token;");
         writer.println("");
