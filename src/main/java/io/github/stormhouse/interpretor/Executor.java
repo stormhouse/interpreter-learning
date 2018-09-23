@@ -8,7 +8,7 @@ import io.github.stormhouse.parser.Context;
 import java.util.List;
 
 public class Executor implements Expr.Visitor, Stmt.Visitor {
-    private Context context = new Context();
+    private Context context = new Context(null);
 
     public void interpret (List<Stmt> stmts) {
         for (Stmt stmt : stmts) {
@@ -56,7 +56,17 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     @Override
     public Object visitVariableExpr(Expr.Variable expr) {
         Token name = expr.name;
-        return this.context.get(name.lexeme);
+        Context ctx = this.context;
+        Object value = null;
+        while (ctx != null) {
+            value = ctx.get(name.lexeme);
+            if (value == null) {
+                ctx = ctx.getParent();
+            } else {
+                break;
+            }
+        }
+        return value;
     }
 
     @Override
@@ -64,7 +74,7 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
         List<Stmt> stmts = stmt.stmts;
         Context previous = this.context;
         // enter new block context --------------
-        this.context = new Context();
+        this.context = new Context(previous);
         for (Stmt s : stmts) {
             execute(s);
         }
