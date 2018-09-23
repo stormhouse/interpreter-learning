@@ -3,10 +3,13 @@ package io.github.stormhouse.interpretor;
 import io.github.stormhouse.ast.Expr;
 import io.github.stormhouse.ast.Stmt;
 import io.github.stormhouse.lexer.Token;
+import io.github.stormhouse.parser.Context;
 
 import java.util.List;
 
 public class Executor implements Expr.Visitor, Stmt.Visitor {
+    private Context context = new Context();
+
     public void interpret (List<Stmt> stmts) {
         for (Stmt stmt : stmts) {
             execute(stmt);
@@ -52,7 +55,8 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
 
     @Override
     public Object visitVariableExpr(Expr.Variable expr) {
-        return null;
+        Token name = expr.name;
+        return this.context.get(name.lexeme);
     }
 
     @Override
@@ -64,6 +68,10 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
 
     @Override
     public Object visitVarStmt(Stmt.Var stmt) {
+        Token token = stmt.token;
+        Expr expr = stmt.expr;
+        Object value =  execute(expr);
+        this.context.define(token.lexeme, value);
         return null;
     }
 

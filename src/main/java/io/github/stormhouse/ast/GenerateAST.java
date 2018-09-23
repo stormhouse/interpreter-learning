@@ -14,7 +14,7 @@ public class GenerateAST {
                 "Grouping : Expr expression",
                 "Literal  : Object value",
                 "Unary    : Token operator, Expr right",
-                "Variable : Expr name"
+                "Variable : Token name"
         ));
         defineAST(outputDir, "Stmt", Arrays.asList(
                 "Expression : Expr expr",

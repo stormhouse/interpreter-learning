@@ -53,13 +53,13 @@ public abstract class Expr {
         public final Expr right;
     }
     public static class Variable extends Expr {
-        public Variable(Expr name) {
+        public Variable(Token name) {
             this.name = name;
         }
         public <R> R accept (Visitor<R> visitor) {
             return visitor.visitVariableExpr(this);
         }
-        public final Expr name;
+        public final Token name;
     }
 
     public abstract <R> R accept (Visitor<R> visitor);
