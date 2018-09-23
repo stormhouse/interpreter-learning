@@ -1,17 +1,17 @@
 package io.github.stormhouse.lexer;
 
 public enum TokenType {
-    SEMICOLON,
+    SEMICOLON, EQUAL,
     COMMENT,
 
-    PRINT,
+    PRINT, VAR,
 
     LEFT_PAREN, RIGHT_PAREN,
 
     PLUS, MINUS, STAR, SLASH,
 
     IDENTIFIER,
-    TRUE,
+    TRUE, FALSE,
     STRING,
     NUMBER,
 

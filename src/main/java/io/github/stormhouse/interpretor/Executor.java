@@ -51,10 +51,20 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     }
 
     @Override
+    public Object visitVariableExpr(Expr.Variable expr) {
+        return null;
+    }
+
+    @Override
     public Object visitExpressionStmt(Stmt.Expression stmt) {
         Expr expr = stmt.expr;
         System.out.println(expr);
         return expr;
+    }
+
+    @Override
+    public Object visitVarStmt(Stmt.Var stmt) {
+        return null;
     }
 
     @Override

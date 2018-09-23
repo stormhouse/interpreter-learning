@@ -6,7 +6,9 @@ import com.sun.xml.internal.bind.v2.model.core.ID;
 import static io.github.stormhouse.Util.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static io.github.stormhouse.lexer.TokenType.*;
 
@@ -14,6 +16,7 @@ import static io.github.stormhouse.lexer.TokenType.*;
 public class Scanner {
     private final String rawCode;
     private List<Token> tokens = new ArrayList<Token>();
+    private Map<String, TokenType> keywords = new HashMap<>();
 
     private int start = 0;
     private int current = 0;
@@ -21,12 +24,17 @@ public class Scanner {
 
     public Scanner (String rawCode) {
         this.rawCode = rawCode;
+        keywords.put("true" , TRUE);
+        keywords.put("false" , FALSE);
+        keywords.put("var"  , VAR);
+        keywords.put("print", PRINT);
     }
     public List<Token> scanTokens () {
         while (!isAtEnd()) {
             char c = this.advance();
             switch (c) {
                 case ';': addToken(SEMICOLON); break;
+                case '=': addToken(EQUAL); break;
                 case '(': addToken(LEFT_PAREN); break;
                 case ')': addToken(RIGHT_PAREN); break;
                 case '+': addToken(PLUS); break;
@@ -62,20 +70,18 @@ public class Scanner {
     }
     private void addToken(TokenType type) {
         String lexeme = this.rawCode.substring(this.start, this.current);
+        Token t = null;
         if (type == IDENTIFIER) {
-            switch (lexeme) {
-                case "true":
-                    this.tokens.add(new Token(TRUE, lexeme, null, this.line));
-                    break;
-                case "print":
-                    this.tokens.add(new Token(PRINT, lexeme, null, this.line));
-                    break;
-                default:
-                    break;
+            // identifier contains: keyword and variable
+            if (this.keywords.containsKey(lexeme)) {
+                t = new Token(this.keywords.get(lexeme), lexeme, null, this.line);
+            } else {
+                t = new Token(IDENTIFIER, lexeme, null, this.line);
             }
         } else {
-            this.tokens.add(new Token(type, lexeme, lexeme, this.line));
+            t = new Token(type, lexeme, lexeme, this.line);
         }
+        this.tokens.add(t);
     }
     private void addToken(TokenType type, Object literal) {
         String lexeme = this.rawCode.substring(this.start, this.current);

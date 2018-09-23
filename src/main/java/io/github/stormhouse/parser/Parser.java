@@ -21,9 +21,28 @@ public class Parser {
         this.current = 0;
         List<Stmt> stmts = new ArrayList<Stmt>();
         while (!isAtEnd()) {
-            stmts.add(statement());
+//            stmts.add(statement());
+            stmts.add(declaration());
         }
         return stmts;
+    }
+    private Stmt declaration () {
+        if (match(VAR)) {
+            return varDeclaration();
+        }
+        return statement();
+    }
+    private Stmt varDeclaration () {
+        consume(IDENTIFIER, "declaration require identifier");
+        Token name = previous();
+        Stmt var;
+        if (match(EQUAL)) {
+            var = new Stmt.Var(name, expression());
+        } else {
+            var = new Stmt.Var(name, null);
+        }
+        consume(SEMICOLON, "declaration require end with ;");
+        return var;
     }
     private Stmt statement () {
         if (match(PRINT)) {

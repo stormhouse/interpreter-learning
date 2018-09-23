@@ -1,3 +1,1 @@
-print 1 + 2;
-print true;
-print 'Hello World!';
+var foo = 1;
