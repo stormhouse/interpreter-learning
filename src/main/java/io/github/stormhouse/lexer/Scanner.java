@@ -41,6 +41,14 @@ public class Scanner {
                 case ')': addToken(RIGHT_PAREN); break;
                 case ';': addToken(SEMICOLON); break;
                 case '=': addToken(EQUAL); break;
+                case '&':
+                    if (match('&')) {
+                        addToken(AND); break;
+                    }
+                case '|':
+                    if (match('|')) {
+                        addToken(OR); break;
+                    }
                 case '+': addToken(PLUS); break;
                 case '-': addToken(MINUS); break;
                 case '*': addToken(STAR); break;

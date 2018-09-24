@@ -1,6 +1,8 @@
-var isTrue = true;
-if (isTrue) {
-    print 'true';
-} else {
-    print 'false';
-}
+var a = true;
+var b = false;
+var c = a || b;
+var d = a && b;
+var e = a || b && c;
+print c;
+print d;
+print e;

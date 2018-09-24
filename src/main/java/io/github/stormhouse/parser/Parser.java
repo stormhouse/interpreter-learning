@@ -94,13 +94,32 @@ public class Parser {
         return assignment();
     }
     public Expr assignment () {
-        Expr expr = equality();
+//        Expr expr = equality();
+        Expr expr = or();
         if (match(EQUAL)) {
             Expr value = assignment();
             if (expr instanceof Expr.Variable) {
                 expr = new Expr.Assign(((Expr.Variable) expr).name, value);
                 consume(SEMICOLON, "require ; at the end of assign expression");
             }
+        }
+        return expr;
+    }
+    private Expr or () {
+        Expr expr = and();
+        if (match(OR)) {
+            Token operator = previous();
+            Expr right = assignment();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+        return expr;
+    }
+    private Expr and () {
+        Expr expr = equality();
+        if (match(AND)) {
+            Token operator = previous();
+            Expr right = assignment();
+            expr = new Expr.Logical(expr, operator, right);
         }
         return expr;
     }
@@ -148,6 +167,7 @@ public class Parser {
     }
     private Expr primary () {
         if (match(TRUE)) return new Expr.Literal(true);
+        if (match(FALSE)) return new Expr.Literal(false);
         if (match(NUMBER, STRING)) {
             return new Expr.Literal(previous().literal);
         }

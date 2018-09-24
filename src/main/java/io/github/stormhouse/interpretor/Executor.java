@@ -7,6 +7,8 @@ import io.github.stormhouse.parser.Context;
 
 import java.util.List;
 
+import static io.github.stormhouse.lexer.TokenType.*;
+
 public class Executor implements Expr.Visitor, Stmt.Visitor {
     private Context context = new Context(null);
 
@@ -36,6 +38,28 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
                 ;
         }
         return expr.accept(this);
+    }
+
+    @Override
+    public Object visitLogicalExpr(Expr.Logical expr) {
+        Token logic = expr.operator;
+        Expr left = expr.left;
+        Expr right = expr.right;
+        Object leftValue = execute(left);
+        if (logic.type == OR) {
+            if ((boolean) leftValue) {
+                return leftValue;
+            } else {
+                return execute(right);
+            }
+        } else if (logic.type == AND) {
+            if (!(boolean) leftValue) {
+                return leftValue;
+            } else {
+                return execute(right);
+            }
+        }
+        return null;
     }
 
     @Override

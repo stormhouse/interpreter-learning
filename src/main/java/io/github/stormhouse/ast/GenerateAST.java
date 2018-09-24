@@ -11,10 +11,11 @@ public class GenerateAST {
         String outputDir = "./src/main/java/io/github/stormhouse/ast/";
         defineAST(outputDir, "Expr", Arrays.asList(
                 "Binary   : Expr left, Token operator, Expr right",
+                "Logical  : Expr left, Token operator, Expr right",
                 "Grouping : Expr expression",
                 "Literal  : Object value",
                 "Unary    : Token operator, Expr right",
-                "Assign     : Token name, Expr right",
+                "Assign   : Token name, Expr right",
                 "Variable : Token name"
         ));
         defineAST(outputDir, "Stmt", Arrays.asList(
