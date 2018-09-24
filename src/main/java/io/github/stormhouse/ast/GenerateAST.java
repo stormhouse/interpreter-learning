@@ -23,7 +23,8 @@ public class GenerateAST {
                 "Print      : Expr expr",
                 "Var        : Token token, Expr expr",
                 "Block      : List<Stmt> stmts",
-                "If         : Expr condition, Stmt thenBranch, Stmt elseBranch"
+                "If         : Expr condition, Stmt thenBranch, Stmt elseBranch",
+                "While      : Expr condition, Stmt stmt"
         ));
     }
     static void defineAST (String outputDir, String baseName, List<String> types)

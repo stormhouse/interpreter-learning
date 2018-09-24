@@ -34,6 +34,16 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
                     return (double)left + (double)right;
                 }
                 return null;
+            case GREATER:
+                if (left instanceof Double && right instanceof Double) {
+                    return (double)left > (double)right;
+                }
+                return null;
+            case LESS:
+                if (left instanceof Double && right instanceof Double) {
+                    return (double)left < (double)right;
+                }
+                return null;
             default:
                 ;
         }
@@ -142,9 +152,19 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     }
 
     @Override
+    public Object visitWhileStmt(Stmt.While stmt) {
+        Expr condition = stmt.condition;
+        Stmt body = stmt.stmt;
+        while ((boolean)execute(condition)) {
+            execute(body);
+        }
+        return null;
+    }
+
+    @Override
     public Object visitExpressionStmt(Stmt.Expression stmt) {
         Expr expr = stmt.expr;
-        System.out.println(expr);
+//        System.out.println(expr);
         return execute(expr);
 //        return expr;
     }

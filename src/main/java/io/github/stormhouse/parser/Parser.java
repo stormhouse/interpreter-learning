@@ -48,6 +48,9 @@ public class Parser {
         if (match(IF)) {
             return ifStatement();
         }
+        if (match(WHILE)) {
+            return whileStatement();
+        }
         if (match(PRINT)) {
             return printStatement();
         }
@@ -55,6 +58,14 @@ public class Parser {
             return new Stmt.Block(block());
         }
         return expressionStatement();
+    }
+    private Stmt whileStatement () {
+        consume(LEFT_PAREN, "require ( after if");
+        Expr condition = expression();
+        consume(RIGHT_PAREN, "require ) after if");
+        Stmt s = statement();
+        return new Stmt.While(condition, s);
+//        return null;
     }
     private Stmt ifStatement () {
         consume(LEFT_PAREN, "require ( after if");
@@ -129,6 +140,11 @@ public class Parser {
     }
     private Expr comparison () {
         Expr expr = addition();
+        if (match(LESS, LESS_EQUAL, GREATER, GREATER_EQUAL)) {
+            Token operator = previous();
+            Expr right = comparison();
+            expr = new Expr.Binary(expr, operator, right);
+        }
         return expr;
     }
     // + -

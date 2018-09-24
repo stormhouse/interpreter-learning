@@ -30,6 +30,7 @@ public class Scanner {
         keywords.put("print", PRINT);
         keywords.put("if", IF);
         keywords.put("else", ELSE);
+        keywords.put("while", WHILE);
     }
     public List<Token> scanTokens () {
         while (!isAtEnd()) {
@@ -41,6 +42,8 @@ public class Scanner {
                 case ')': addToken(RIGHT_PAREN); break;
                 case ';': addToken(SEMICOLON); break;
                 case '=': addToken(EQUAL); break;
+                case '<': addToken(match('=') ? LESS_EQUAL : LESS); break;
+                case '>': addToken(match('=') ? GREATER_EQUAL : GREATER); break;
                 case '&':
                     if (match('&')) {
                         addToken(AND); break;
