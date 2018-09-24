@@ -28,6 +28,8 @@ public class Scanner {
         keywords.put("false" , FALSE);
         keywords.put("var"  , VAR);
         keywords.put("print", PRINT);
+        keywords.put("if", IF);
+        keywords.put("else", ELSE);
     }
     public List<Token> scanTokens () {
         while (!isAtEnd()) {

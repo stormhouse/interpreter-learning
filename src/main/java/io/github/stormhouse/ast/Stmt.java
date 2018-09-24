@@ -6,19 +6,11 @@ import io.github.stormhouse.lexer.Token;
 
 public abstract class Stmt {
     public interface Visitor<R> {
-        R visitBlockStmt (Block stmt);
         R visitExpressionStmt (Expression stmt);
-        R visitVarStmt (Var stmt);
         R visitPrintStmt (Print stmt);
-    }
-    public static class Block extends Stmt {
-        public Block(List<Stmt> stmts) {
-            this.stmts = stmts;
-        }
-        public <R> R accept (Visitor<R> visitor) {
-            return visitor.visitBlockStmt(this);
-        }
-        public final List<Stmt> stmts;
+        R visitVarStmt (Var stmt);
+        R visitBlockStmt (Block stmt);
+        R visitIfStmt (If stmt);
     }
     public static class Expression extends Stmt {
         public Expression(Expr expr) {
@@ -26,6 +18,15 @@ public abstract class Stmt {
         }
         public <R> R accept (Visitor<R> visitor) {
             return visitor.visitExpressionStmt(this);
+        }
+        public final Expr expr;
+    }
+    public static class Print extends Stmt {
+        public Print(Expr expr) {
+            this.expr = expr;
+        }
+        public <R> R accept (Visitor<R> visitor) {
+            return visitor.visitPrintStmt(this);
         }
         public final Expr expr;
     }
@@ -40,14 +41,27 @@ public abstract class Stmt {
         public final Token token;
         public final Expr expr;
     }
-    public static class Print extends Stmt {
-        public Print(Expr expr) {
-            this.expr = expr;
+    public static class Block extends Stmt {
+        public Block(List<Stmt> stmts) {
+            this.stmts = stmts;
         }
         public <R> R accept (Visitor<R> visitor) {
-            return visitor.visitPrintStmt(this);
+            return visitor.visitBlockStmt(this);
         }
-        public final Expr expr;
+        public final List<Stmt> stmts;
+    }
+    public static class If extends Stmt {
+        public If(Expr condition, Stmt thenBranch, Stmt elseBranch) {
+            this.condition = condition;
+            this.thenBranch = thenBranch;
+            this.elseBranch = elseBranch;
+        }
+        public <R> R accept (Visitor<R> visitor) {
+            return visitor.visitIfStmt(this);
+        }
+        public final Expr condition;
+        public final Stmt thenBranch;
+        public final Stmt elseBranch;
     }
 
     public abstract <R> R accept (Visitor<R> visitor);

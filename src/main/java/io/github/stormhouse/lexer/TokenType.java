@@ -6,7 +6,7 @@ public enum TokenType {
     LEFT_PAREN, RIGHT_PAREN,
     COMMENT,
 
-    PRINT, VAR, ASSIGN,
+    PRINT, VAR, ASSIGN, IF, ELSE,
 
 
     PLUS, MINUS, STAR, SLASH,

@@ -18,10 +18,11 @@ public class GenerateAST {
                 "Variable : Token name"
         ));
         defineAST(outputDir, "Stmt", Arrays.asList(
-                "Block      : List<Stmt> stmts",
                 "Expression : Expr expr",
+                "Print      : Expr expr",
                 "Var        : Token token, Expr expr",
-                "Print      : Expr expr"
+                "Block      : List<Stmt> stmts",
+                "If         : Expr condition, Stmt thenBranch, Stmt elseBranch"
         ));
     }
     static void defineAST (String outputDir, String baseName, List<String> types)

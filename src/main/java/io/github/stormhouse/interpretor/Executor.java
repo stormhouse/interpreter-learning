@@ -105,6 +105,19 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     }
 
     @Override
+    public Object visitIfStmt(Stmt.If stmt) {
+        Expr condition = stmt.condition;
+        Stmt ifBranch = stmt.thenBranch;
+        Stmt elseBranch = stmt.elseBranch;
+        if ((boolean)execute(condition)) {
+            execute(ifBranch);
+        } else {
+            execute(elseBranch);
+        }
+        return null;
+    }
+
+    @Override
     public Object visitExpressionStmt(Stmt.Expression stmt) {
         Expr expr = stmt.expr;
         System.out.println(expr);

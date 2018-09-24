@@ -45,6 +45,9 @@ public class Parser {
         return var;
     }
     private Stmt statement () {
+        if (match(IF)) {
+            return ifStatement();
+        }
         if (match(PRINT)) {
             return printStatement();
         }
@@ -52,6 +55,21 @@ public class Parser {
             return new Stmt.Block(block());
         }
         return expressionStatement();
+    }
+    private Stmt ifStatement () {
+        consume(LEFT_PAREN, "require ( after if");
+        Expr condition = expression();
+        consume(RIGHT_PAREN, "require ) after if");
+        Stmt thenStmt = statement();
+
+        Stmt elseStmt = null;
+        if (check(ELSE)) {
+            consume(ELSE, "");
+            elseStmt = statement();
+        }
+
+        Stmt ifStmt = new Stmt.If(condition, thenStmt, elseStmt);
+        return ifStmt;
     }
     private List<Stmt> block () {
         List<Stmt> stmts = new ArrayList<>();
@@ -129,7 +147,7 @@ public class Parser {
         return expr;
     }
     private Expr primary () {
-        if (match(TRUE)) return new Expr.Literal("true");
+        if (match(TRUE)) return new Expr.Literal(true);
         if (match(NUMBER, STRING)) {
             return new Expr.Literal(previous().literal);
         }
