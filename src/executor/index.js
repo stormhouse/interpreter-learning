@@ -67,6 +67,8 @@ class Executor {
       }
     } else if (type === 'identifier') {
       if (value === 'function') {
+        // lexical scope
+        node.scope = this.context
         return node
       } else {
         //if (this.context.variables[value]) { // var foo

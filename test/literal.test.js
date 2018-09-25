@@ -15,9 +15,14 @@ t => {
 })
 test(`literal: boolean------------------------------>
   var foo = true
-  foo`,
-t => {
-  t.deepEqual(lpe(`var foo = true
+  var bar = false
   foo
-  `), [true])
+  bar`,
+t => {
+  t.deepEqual(lpe(
+    `var foo = true
+    var bar = false
+    foo
+    bar`
+  ), [true, false])
 })
