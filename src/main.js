@@ -2,6 +2,7 @@ import lexer from './lexer/index.js'
 import Parser from './parser/tdop.js'
 // import evaluator from './evaluator/index.js'
 import Executor from './executor/index.js'
+import Debugger from './debugger/index.js'
 /*
 代码: 字符串
   123
@@ -27,21 +28,22 @@ import Executor from './executor/index.js'
 */
 // const code = `123`
 const codes = [
-  // `var foo = function () {
-  //   var a = 1
-  //   var b = function () {
-  //     a
-  //   }
-  //   b
-  // }
-  // var z = foo()
-  // z()`
-  //`var foo = true
-  //foo`
-  'false'
+   `var foo = function () {
+     var a = 1
+     var b = function () {
+       a
+     }
+     b
+   }
+   var z = foo()
+   z()`
+  //`var foo = 123`
+  //'false'
 ]
 const vv = codes.map((code) => {
   const tokens = lexer(code)
+  const d = new Debugger(tokens)
+  d.draw()
   console.log((tokens))
   const parser = new Parser(tokens)
   const trees = parser.toAST()

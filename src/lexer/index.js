@@ -11,6 +11,7 @@ const lexer = (codes) => {
   const tokens = []
   let char = ''
   let index = 0
+  let line = 1
   const next = () => {
     return codes[++index]
   }
@@ -21,7 +22,7 @@ const lexer = (codes) => {
     return codes[index + 1]
   }
   const addTokens = (type, t) => {
-    tokens.push({type: type, value: t})
+    tokens.push({type: type, value: t, line: line})
   }
   let maxRecursive = 0
 
@@ -33,6 +34,7 @@ const lexer = (codes) => {
     char = codes[index]
     if (char === '\n') {
       addTokens('\n')
+      line++
       next()
     } else if (isWhiteSpace(char)) {
       next()
