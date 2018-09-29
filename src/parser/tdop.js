@@ -1,5 +1,5 @@
 import { symbolOriginal } from "./symbolOriginal.js";
-import Token from "./Token.js";
+import { Token } from "./Token.js";
 import Scope from "./Scope.js";
 import { IDENTIFIER, LITERAL, NUMBER } from '../types.js'
 
