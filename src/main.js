@@ -1,8 +1,12 @@
 import lexer from './lexer/index.js'
+import Lexer from './lexer/Lexer.js'
 import Parser from './parser/tdop.js'
 // import evaluator from './evaluator/index.js'
 import Executor from './executor/index.js'
 import Debugger from './debugger/index.js'
+const l = new Lexer(`// comment
+(123 + 234) + 3;`)
+l.lex()
 /*
 代码: 字符串
   123
