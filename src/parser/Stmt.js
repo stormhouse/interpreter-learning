@@ -41,6 +41,25 @@ class StmtBlock {
     return visitor.visitStmtBlock(this)
   }
 }
+class StmtFunction {
+  constructor (name, parameter, stmt) {
+    this.name = name
+    this.parameter = parameter
+    this.stmts = stmt
+  }
+  accept (visitor) {
+    return visitor.visitStmtFunction(this)
+  }
+}
+class StmtCall {
+  constructor (callee, parameter) {
+    this.callee = callee
+    this.parameter = parameter
+  }
+  accept (visitor) {
+    return visitor.visitStmtCall(this)
+  }
+}
 
 export {
   StmtExpr,
@@ -48,4 +67,6 @@ export {
   StmtAssign,
   StmtPrint,
   StmtBlock,
+  StmtFunction,
+  StmtCall,
 }

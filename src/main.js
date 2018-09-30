@@ -33,10 +33,17 @@ import Debugger from './debugger/index.js'
 // const code = `123`
 const codes = [
   `var foo = 123 * 456 - 789 * 5 + 9 * 5;
+function bar () {
+  print(11111111111);
+}
+bar();
 {
   var foo = 0;
   print(foo);
   foo = 1;
+  {
+    print(foo);
+  }
   print(foo);
 }
 print(foo);

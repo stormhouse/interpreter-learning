@@ -53,6 +53,17 @@ class Executor {
     // exit block scope
     this.context = this.context.parent
   }
+  visitStmtFunction (stmt) {
+    this.context.define(stmt.name.literal, stmt)
+  }
+  visitStmtCall (stmt) {
+    const f = this.context.getVariable(stmt.callee.literal)
+    const realArgs = stmt.parameter
+    const st = f.stmts
+    for (let s of st.stmts) {
+      this.execute(s)
+    }
+  }
   visitVariable (expr) {
     const n = expr.name.literal
     return this.context.getVariable(n)

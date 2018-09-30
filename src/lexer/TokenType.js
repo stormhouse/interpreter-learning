@@ -26,6 +26,7 @@ const TokenType = {
   TURE         : Symbol('true'),
   FALSE        : Symbol('false'),
   IDENTIFIER   : Symbol('identifier'),
+  FUNCTION     : Symbol('function'),
 
   VAR          : Symbol('var'),
   ASSIGN       : Symbol('assign'),

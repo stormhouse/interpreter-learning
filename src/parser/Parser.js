@@ -5,6 +5,8 @@ import {
   StmtPrint,
   StmtExpr,
   StmtBlock,
+  StmtFunction,
+  StmtCall,
 } from './Stmt.js'
 import {
   ExprVariable,
@@ -14,7 +16,9 @@ import {
 } from './Expr.js'
 
 /*
-statment       --> var | print | exprStmt | block
+statment       --> var | function | print | exprStmt | block
+function       --> "function" IDENTIFIER "(" parameters? ")" block
+parameters     --> IDENTIFIER ("," IDENTIFIER)*
 block          --> "{" statment* "}"
 var            --> "var" IDENTIFIER ("=" expression)? ";"
 print          --> "print(" expression ");"
@@ -22,7 +26,7 @@ exprStmt       --> expression ";"
 expression     --> addition
 addition       --> multiplication ("+" | "-") multiplication | multiplication
 multiplication --> unary ("*" | "/") unary | unary
-unary          --> "-" unary | primary
+unary          --> call | "-" unary | primary
 primary        --> "(" expression ")" | "true" | "false" | NUMBER | STRING
 
 */
@@ -42,6 +46,9 @@ class Parser {
   statement () {
     if (this.isMatch(TokenType.VAR)) {
       return this.var()
+    }
+    if (this.isMatch(TokenType.FUNCTION)) {
+      return this.function()
     }
     if (this.isMatch(TokenType.PRINT)) {
       return this.print()
@@ -66,6 +73,18 @@ class Parser {
     } else {
       throw Error('expected variable name')
     }
+  }
+  function () {
+    const v = this.consume(TokenType.IDENTIFIER, 'expected function name')
+    this.consume(TokenType.LEFT_PAREN)
+    let args = []
+    if (!this.check(TokenType.RIGHT_PAREN)) {
+
+    }
+    this.consume(TokenType.RIGHT_PAREN)
+    this.consume(TokenType.LEFT_BRACE)
+    const stmt = this.block()
+    return new StmtFunction(v, args, stmt)
   }
   print () {
     this.consume(TokenType.LEFT_PAREN, 'expected (')
@@ -96,10 +115,10 @@ class Parser {
     return new StmtExpr(expr)
   }
   expression () {
-    if (this.isMatch(TokenType.IDENTIFIER)) {
+    const expr = this.addtion()
+    if (this.isMatch(TokenType.IDENTIFIER) ) {
       return new ExprVariable(this.previous())
     }
-    const expr = this.addtion()
     return expr
   }
   addtion () {
@@ -128,8 +147,22 @@ class Parser {
     if (this.isMatch(TokenType.MINUS)) {
       return new ExprUnary(this.previous(), this.unary())
     }
+    if (this.checkNext(TokenType.LEFT_PAREN)) {
+      return this.call()
+    }
     const expr = this.primary()
     return expr
+  }
+  call () {
+    const name = this.consume(TokenType.IDENTIFIER)
+    this.consume(TokenType.LEFT_PAREN)
+    const args = []
+    if (!this.check(TokenType.RIGHT_PAREN)) {
+
+    }
+    debugger
+    this.consume(TokenType.RIGHT_PAREN)
+    return new StmtCall(name, args)
   }
   primary () {
     let expr
@@ -147,7 +180,9 @@ class Parser {
   }
   consume (type, errorMessage) {
     if (this.check(type)) {
+      const token = this.tokens[this.current]
       this.current++
+      return token
     } else {
       throw new Error(errorMessage)
     }
