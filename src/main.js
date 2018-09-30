@@ -33,9 +33,13 @@ import Debugger from './debugger/index.js'
 // const code = `123`
 const codes = [
   `var foo = 123 * 456 - 789 * 5 + 9 * 5;
-print(123);
-print(1+2);
-234;
+{
+  var foo = 0;
+  print(foo);
+  foo = 1;
+  print(foo);
+}
+print(foo);
 `,
 // `// comment
 // var foo = 123;
@@ -48,6 +52,7 @@ print(1+2);
 // }
 // (123 + 234) + 3;`
 ]
+console.log(codes[0])
 const vv = codes.map((code) => {
   const lexer = new Lexer(code)
   const tokens = lexer.lex()

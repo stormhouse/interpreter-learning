@@ -1,8 +1,10 @@
 import TokenType from '../lexer/TokenType.js'
 import {
   StmtVar,
+  StmtAssign,
   StmtPrint,
   StmtExpr,
+  StmtBlock,
 } from './Stmt.js'
 import {
   ExprVariable,
@@ -12,7 +14,8 @@ import {
 } from './Expr.js'
 
 /*
-statment       --> var | print | exprStmt
+statment       --> var | print | exprStmt | block
+block          --> "{" statment* "}"
 var            --> "var" IDENTIFIER ("=" expression)? ";"
 print          --> "print(" expression ");"
 exprStmt       --> expression ";"
@@ -43,6 +46,12 @@ class Parser {
     if (this.isMatch(TokenType.PRINT)) {
       return this.print()
     }
+    if (this.isMatch(TokenType.LEFT_BRACE)) {
+      return this.block()
+    }
+    if (this.check(TokenType.IDENTIFIER) && this.checkNext(TokenType.EQUAL)) {
+      return this.assign()
+    }
     return this.exprStmt()
   }
   var () {
@@ -64,6 +73,22 @@ class Parser {
     this.consume(TokenType.RIGHT_PAREN, 'expected )')
     this.consume(TokenType.SEMICOLON, 'expected ;')
     return new StmtPrint(expr)
+  }
+  block () {
+    const stmts = []
+    while (!this.check(TokenType.RIGHT_BRACE)) {
+      stmts.push(this.statement())
+    }
+    this.consume(TokenType.RIGHT_BRACE, 'expected } at the end of block')
+    return new StmtBlock(stmts)
+  }
+  assign () {
+    this.consume(TokenType.IDENTIFIER)
+    const name = this.previous()
+    this.consume(TokenType.EQUAL)
+    const expr = this.expression()
+    this.consume(TokenType.SEMICOLON, 'expected ;')
+    return new StmtAssign(name, expr)
   }
   exprStmt () {
     let expr = this.expression()
@@ -134,7 +159,13 @@ class Parser {
     }
     return false
   }
-  check (types) {
+  checkNext (types) {
+    if (this.current + 1 > this.tokens.length) {
+      return false
+    }
+    return this.check(types, this.current + 1)
+  }
+  check (types, index) {
     if (!this.isAtEnd()) {
       let tys = []
       if (Array.isArray(types)) {
@@ -143,7 +174,7 @@ class Parser {
         tys.push(types)
       }
       for (let t of tys) {
-        if (t === this.tokens[this.current].type) {
+        if (t === this.tokens[index !== undefined ? index : this.current].type) {
           return true
         }
       }

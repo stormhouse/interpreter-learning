@@ -1,7 +1,10 @@
 import TokenType from '../lexer/TokenType.js'
+import Context from './Context.js'
+
 class Executor {
   constructor (stmts) {
     this.stmts = stmts
+    this.context = new Context()
   }
   run () {
     const result = []
@@ -19,10 +22,16 @@ class Executor {
   visitStmtVar (stmt) {
     const {
       name,
-      value,
+      expr,
     } = stmt
-
-    debugger
+    this.context.define(name.literal, this.expression(expr))
+  }
+  visitStmtAssign (stmt) {
+    const {
+      name,
+      expr,
+    } = stmt
+    this.context.define(name.literal, this.expression(expr))
   }
   visitStmtPrint (stmt) {
     const expr = stmt.expr
@@ -33,6 +42,20 @@ class Executor {
     const expr = stmt.expr
     const value = this.expression(expr)
     return value
+  }
+  visitStmtBlock (stmt) {
+    const stmts = stmt.stmts
+    // enter block scope
+    this.context = new Context(this.context)
+    for (let s of stmts) {
+      this.execute(s)
+    }
+    // exit block scope
+    this.context = this.context.parent
+  }
+  visitVariable (expr) {
+    const n = expr.name.literal
+    return this.context.getVariable(n)
   }
   visitLiteral (expr) {
     return expr.value

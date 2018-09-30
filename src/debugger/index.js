@@ -41,11 +41,11 @@ class Debugger {
         x = 10
       }
       y = newY
-      if (token.type == TokenType.RIGHT_PAREN) {
+      if (token.type == TokenType.RIGHT_BRACE) {
         baseX -= 10
       }
       const t = new Text(context, (token.literal) + ' ', ColorMap[token.type], x + baseX, y)
-      if (token.type == TokenType.LEFT_PAREN) {
+      if (token.type == TokenType.LEFT_BRACE) {
         baseX += 10
       }
       x = t.draw().x
