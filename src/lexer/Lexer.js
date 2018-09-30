@@ -3,6 +3,9 @@ import TokenType from './TokenType.js'
 
 const isDigit = (c) => /\d/.test(c)
 const isAlphabet = (c) => /[a-zA-Z_]/.test(c)
+const keywords = {
+  'var': TokenType.VAR,
+}
 
 class Lexer {
   constructor (rawCode) {
@@ -82,10 +85,25 @@ class Lexer {
     }
     this.addToken(TokenType.EOF)
     debugger
+    return this.tokens
   }
   string () {
+    while (!this.isAtEnd() && this.peek() !== '\'') {
+      this.advance()
+    }
+    this.consume('\'', 'expect \'')
+    this.addToken(TokenType.STRING)
   }
   identifier () {
+    while (!this.isAtEnd() && isAlphabet(this.peek())) {
+      this.advance()
+    }
+    const type = keywords[this.getLiteral()]
+    if (type) {
+      this.addToken(type)
+    } else {
+      this.addToken(TokenType.IDENTIFIER)
+    }
   }
   number () {
     while (!this.isAtEnd() && isDigit(this.peek())) {
@@ -93,12 +111,30 @@ class Lexer {
     }
     this.addToken(TokenType.NUMBER)
   }
+  getLiteral () {
+    return this.rawCode.substring(this.start, this.current)
+  }
   addToken (type) {
-    const literal = this.rawCode.substring(this.start, this.current)
+    const literal = this.getLiteral()
     const token = new Token(type, literal, this.row, this.column, this.tokens.length)
     this.tokens.push(token)
     this.start = this.current
     this.column++
+  }
+  consume (char, errorMessage) {
+    let flag = false
+    if (!this.isAtEnd()) {
+      const nextChar = this.rawCode[this.current]
+      if (nextChar === char) {
+        flag = true
+      }
+    }
+    if (flag) {
+      this.advance()
+      return true
+    } else {
+      throw new Error(errorMessage)
+    }
   }
   peek () {
     if (this.isAtEnd()) return ''

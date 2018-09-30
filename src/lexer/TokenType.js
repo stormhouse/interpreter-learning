@@ -23,6 +23,16 @@ const TokenType = {
   COMMENT      : Symbol('comment'),
   STRING       : Symbol('string'),
   NUMBER       : Symbol('number'),
+  TURE         : Symbol('true'),
+  FALSE        : Symbol('false'),
+  IDENTIFIER   : Symbol('identifier'),
+
+  VAR          : Symbol('var'),
+  ASSIGN       : Symbol('assign'),
+  IF           : Symbol('if'),
+  ELSE         : Symbol('else'),
+  WHILE        : Symbol('while'),
+  PRINT        : Symbol('print'),
   EOF          : Symbol('eof'),
 }
 export default TokenType

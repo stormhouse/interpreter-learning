@@ -4,9 +4,9 @@ import Parser from './parser/tdop.js'
 // import evaluator from './evaluator/index.js'
 import Executor from './executor/index.js'
 import Debugger from './debugger/index.js'
-const l = new Lexer(`// comment
-(123 + 234) + 3;`)
-l.lex()
+// const l = new Lexer(`// comment
+// (123 + 234) + 3;`)
+// l.lex()
 /*
 代码: 字符串
   123
@@ -32,20 +32,20 @@ l.lex()
 */
 // const code = `123`
 const codes = [
-   `var foo = function () {
-     var a = 1
-     var b = function () {
-       a
-     }
-     b
-   }
-   var z = foo()
-   z()`
-  //`var foo = 123`
-  //'false'
+`// comment
+var foo = 123;
+var bar = 'str';
+var isF = true;
+if (isF) {
+  print(1)
+} else {
+  print(2)
+}
+(123 + 234) + 3;`
 ]
 const vv = codes.map((code) => {
-  const tokens = lexer(code)
+  const lexer = new Lexer(code)
+  const tokens = lexer.lex()
   const d = new Debugger(tokens)
   d.draw()
   console.log((tokens))

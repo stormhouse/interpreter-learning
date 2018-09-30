@@ -1,3 +1,6 @@
+import ColorMap from './ColorMap.js'
+import TokenType from '../lexer/TokenType.js'
+
 class Debugger {
   constructor (tokens) {
     this.tokens = tokens
@@ -33,26 +36,21 @@ class Debugger {
     let baseX = 0
     let x = 10, y = 10, context = this.context
     this.tokens.forEach((token) => {
-      const newY = offsetY + (token.line - 1) * 12
+      const newY = offsetY + (token.row - 1) * 16
       if (y != newY) {
         x = 10
       }
       y = newY
-      if (token.type == "}") {
+      if (token.type == TokenType.RIGHT_PAREN) {
         baseX -= 10
       }
-      const t = new Text(context, (token.value || token.type) + ' ', ColorMap[token.type], x + baseX, y)
-      if (token.type == "{") {
+      const t = new Text(context, (token.literal) + ' ', ColorMap[token.type], x + baseX, y)
+      if (token.type == TokenType.LEFT_PAREN) {
         baseX += 10
       }
       x = t.draw().x
     })
   }
-}
-const ColorMap = {
-  'identifier': '#977ECF',
-  'number': '#A4f6B7',
-  '=': '#CFBD5E',
 }
 class Text {
   constructor (context, text, color, x, y) {
@@ -65,6 +63,7 @@ class Text {
   draw () {
     this.context.fillStyle = this.color || '#ff79c6'
     this.context.textBaseline = 'top'
+    this.context.font = '14px Arial'
     this.context.fillText(this.text, this.x, this.y)
     const { width , height } = this.context.measureText(this.text)
     return {
