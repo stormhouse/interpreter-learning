@@ -1,6 +1,6 @@
 import lexer from './lexer/index.js'
 import Lexer from './lexer/Lexer.js'
-import Parser from './parser/tdop.js'
+import Parser from './parser/Parser.js'
 // import evaluator from './evaluator/index.js'
 import Executor from './executor/index.js'
 import Debugger from './debugger/index.js'
@@ -32,16 +32,17 @@ import Debugger from './debugger/index.js'
 */
 // const code = `123`
 const codes = [
-`// comment
-var foo = 123;
-var bar = 'str';
-var isF = true;
-if (isF) {
-  print(1)
-} else {
-  print(2)
-}
-(123 + 234) + 3;`
+  `123 * 456 - 789 * 5 + 9 * 5`,
+// `// comment
+// var foo = 123;
+// var bar = 'str';
+// var isF = true;
+// if (isF) {
+//   print(1);
+// } else {
+//   print(2);
+// }
+// (123 + 234) + 3;`
 ]
 const vv = codes.map((code) => {
   const lexer = new Lexer(code)
@@ -50,11 +51,12 @@ const vv = codes.map((code) => {
   d.draw()
   console.log((tokens))
   const parser = new Parser(tokens)
-  const trees = parser.toAST()
-  console.log(trees, parser.scope)
-  const executor = new Executor(parser)
-  const result = executor.run()
-  return result;
+  const trees = parser.parse()
+  debugger
+  // console.log(trees, parser.scope)
+  // const executor = new Executor(parser)
+  // const result = executor.run()
+  // return result;
 })
 
 console.log(vv)

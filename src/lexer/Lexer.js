@@ -1,11 +1,9 @@
 import Token from './Token.js'
 import TokenType from './TokenType.js'
+import Keywords from './Keywords.js'
 
 const isDigit = (c) => /\d/.test(c)
 const isAlphabet = (c) => /[a-zA-Z_]/.test(c)
-const keywords = {
-  'var': TokenType.VAR,
-}
 
 class Lexer {
   constructor (rawCode) {
@@ -29,13 +27,13 @@ class Lexer {
           this.start++
           break;
         case '(':
-          this.addToken(TokenType.LEFT_BRACE); break
-        case ')':
-          this.addToken(TokenType.RIGHT_BRACE); break
-        case '{':
           this.addToken(TokenType.LEFT_PAREN); break
-        case '}':
+        case ')':
           this.addToken(TokenType.RIGHT_PAREN); break
+        case '{':
+          this.addToken(TokenType.LEFT_BRACE); break
+        case '}':
+          this.addToken(TokenType.RIGHT_BRACE); break
         case '<':
           this.addToken(this.isMatch('=') ? TokenType.LESS_EQUAL : TokenType.LESS); break
         case '>':
@@ -84,7 +82,6 @@ class Lexer {
       }
     }
     this.addToken(TokenType.EOF)
-    debugger
     return this.tokens
   }
   string () {
@@ -98,7 +95,7 @@ class Lexer {
     while (!this.isAtEnd() && isAlphabet(this.peek())) {
       this.advance()
     }
-    const type = keywords[this.getLiteral()]
+    const type = Keywords[this.getLiteral()]
     if (type) {
       this.addToken(type)
     } else {
