@@ -17,7 +17,7 @@ const TokenType = {
 
   PLUS         : Symbol('plus'),
   MINUS        : Symbol('minus'),
-  STAR         : Symbol('start'),
+  STAR         : Symbol('star'),
   SLASH        : Symbol('slash'),
 
   COMMENT      : Symbol('comment'),

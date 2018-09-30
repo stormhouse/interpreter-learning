@@ -1,11 +1,21 @@
 import TokenType from '../lexer/TokenType.js'
 import {
+  StmtVar,
+  StmtPrint,
+  StmtExpr,
+} from './Stmt.js'
+import {
+  ExprVariable,
   ExprLiteral,
   ExprUnary,
   ExprBinary,
 } from './Expr.js'
 
 /*
+statment       --> var | print | exprStmt
+var            --> "var" IDENTIFIER ("=" expression)? ";"
+print          --> "print(" expression ");"
+exprStmt       --> expression ";"
 expression     --> addition
 addition       --> multiplication ("+" | "-") multiplication | multiplication
 multiplication --> unary ("*" | "/") unary | unary
@@ -21,21 +31,59 @@ class Parser {
   }
   parse () {
     while (!this.isAtEnd() && !this.check(TokenType.EOF)) {
-      this.ss.push(this.expression())
+      // this.ss.push(this.expression())
+      this.ss.push(this.statement())
     }
     return this.ss
   }
+  statement () {
+    if (this.isMatch(TokenType.VAR)) {
+      return this.var()
+    }
+    if (this.isMatch(TokenType.PRINT)) {
+      return this.print()
+    }
+    return this.exprStmt()
+  }
+  var () {
+    if (this.isMatch(TokenType.IDENTIFIER)) {
+      const name = this.previous()
+      let value
+      if (this.isMatch(TokenType.EQUAL)) {
+        value = this.expression()
+      }
+      this.consume(TokenType.SEMICOLON, 'expected ; at the end of statement')
+      return new StmtVar(name, value)
+    } else {
+      throw Error('expected variable name')
+    }
+  }
+  print () {
+    this.consume(TokenType.LEFT_PAREN, 'expected (')
+    const expr = this.expression()
+    this.consume(TokenType.RIGHT_PAREN, 'expected )')
+    this.consume(TokenType.SEMICOLON, 'expected ;')
+    return new StmtPrint(expr)
+  }
+  exprStmt () {
+    let expr = this.expression()
+    this.consume(TokenType.SEMICOLON, 'expected ;')
+    return new StmtExpr(expr)
+  }
   expression () {
+    if (this.isMatch(TokenType.IDENTIFIER)) {
+      return new ExprVariable(this.previous())
+    }
     const expr = this.addtion()
     return expr
   }
   addtion () {
     let expr = this.multiplication()
     // loop vs recursive
-    while (this.match([TokenType.PLUS, TokenType.MINUS])) {
+    while (this.isMatch([TokenType.PLUS, TokenType.MINUS])) {
       expr = new ExprBinary(this.previous(), expr, this.multiplication())
     }
-    // if (this.match([TokenType.PLUS, TokenType.MINUS])) {
+    // if (this.isMatch([TokenType.PLUS, TokenType.MINUS])) {
     //   return new ExprBinary(this.previous(), expr, this.addtion())
     // }
     return expr
@@ -43,16 +91,16 @@ class Parser {
   multiplication () {
     let expr = this.unary()
     // loop or recursive
-    while (this.match([TokenType.STAR, TokenType.SLASH])) {
+    while (this.isMatch([TokenType.STAR, TokenType.SLASH])) {
       expr = new ExprBinary(this.previous(), expr, this.unary())
     }
-    // if (this.match([TokenType.STAR, TokenType.SLASH])) {
+    // if (this.isMatch([TokenType.STAR, TokenType.SLASH])) {
     //   return new ExprBinary(this.previous(), expr, this.multiplication())
     // }
     return expr
   }
   unary () {
-    if (this.match(TokenType.MINUS)) {
+    if (this.isMatch(TokenType.MINUS)) {
       return new ExprUnary(this.previous(), this.unary())
     }
     const expr = this.primary()
@@ -60,19 +108,26 @@ class Parser {
   }
   primary () {
     let expr
-    if (this.match(TokenType.TURE)) {
+    if (this.isMatch(TokenType.TURE)) {
       return new ExprLiteral('true')
     }
-    if (this.match(TokenType.NUMBER)) {
+    if (this.isMatch(TokenType.NUMBER)) {
       return new ExprLiteral(this.previous().literal)
     }
-    if (this.match(TokenType.LEFT_PAREN)) {
+    if (this.isMatch(TokenType.LEFT_PAREN)) {
       expr = this.expression()
-      this.match(TokenType.RIGHT_PAREN, 'expect )')
+      this.isMatch(TokenType.RIGHT_PAREN, 'expected )')
     }
     return expr
   }
-  match (types) {
+  consume (type, errorMessage) {
+    if (this.check(type)) {
+      this.current++
+    } else {
+      throw new Error(errorMessage)
+    }
+  }
+  isMatch (types) {
     if (this.check(types)) {
       this.current++
       return true
@@ -99,7 +154,9 @@ class Parser {
     return this.tokens[this.current - 1]
   }
   advance () {
+    const t = this.tokens[this.current]
     this.current++
+    return t
   }
   isAtEnd () {
     return this.current >= this.tokens.length

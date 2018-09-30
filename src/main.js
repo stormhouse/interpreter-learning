@@ -2,7 +2,7 @@ import lexer from './lexer/index.js'
 import Lexer from './lexer/Lexer.js'
 import Parser from './parser/Parser.js'
 // import evaluator from './evaluator/index.js'
-import Executor from './executor/index.js'
+import Executor from './executor/Executor.js'
 import Debugger from './debugger/index.js'
 // const l = new Lexer(`// comment
 // (123 + 234) + 3;`)
@@ -32,7 +32,11 @@ import Debugger from './debugger/index.js'
 */
 // const code = `123`
 const codes = [
-  `123 * 456 - 789 * 5 + 9 * 5`,
+  `var foo = 123 * 456 - 789 * 5 + 9 * 5;
+print(123);
+print(1+2);
+234;
+`,
 // `// comment
 // var foo = 123;
 // var bar = 'str';
@@ -52,11 +56,10 @@ const vv = codes.map((code) => {
   console.log((tokens))
   const parser = new Parser(tokens)
   const trees = parser.parse()
-  debugger
-  // console.log(trees, parser.scope)
-  // const executor = new Executor(parser)
-  // const result = executor.run()
-  // return result;
+   console.log(trees)
+  const executor = new Executor(trees)
+  const result = executor.run()
+  return result;
 })
 
 console.log(vv)
