@@ -12,7 +12,7 @@ import static io.github.stormhouse.lexer.TokenType.*;
 
 public class Executor implements Expr.Visitor, Stmt.Visitor {
     public final Context globalContext = new Context(null);
-    private Context context = new Context(globalContext);
+    private Context context = globalContext;
 
     public void interpret (List<Stmt> stmts) {
         for (Stmt stmt : stmts) {
@@ -27,11 +27,14 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     }
     public Object executeBlock (List<Stmt> stmts, Context context) {
         Context p = this.context;
-        this.context = context;
-        for (Stmt s: stmts) {
-            this.execute(s);
+        try {
+            this.context = context;
+            for (Stmt s: stmts) {
+                this.execute(s);
+            }
+        } finally {
+            this.context = p;
         }
-        this.context = p;
         return null;
     }
     @Override
@@ -45,6 +48,11 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
                     return (double)left + (double)right;
                 }
                 return null;
+            case MINUS:
+                if (left instanceof Double && right instanceof Double) {
+                    return (double)left - (double)right;
+                }
+                return null;
             case GREATER:
                 if (left instanceof Double && right instanceof Double) {
                     return (double)left > (double)right;
@@ -53,6 +61,11 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
             case LESS:
                 if (left instanceof Double && right instanceof Double) {
                     return (double)left < (double)right;
+                }
+                return null;
+            case LESS_EQUAL:
+                if (left instanceof Double && right instanceof Double) {
+                    return (double)left <= (double)right;
                 }
                 return null;
             case EQUAL_EQUAL:

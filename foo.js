@@ -1,12 +1,12 @@
-function foo (n) {
-  while (n < 100) {
-    if (n == 3) {
-      return n;
-    }
-    print(n);
-    n = n + 1;
+function fibonacci (n) {
+  if (n <= 1) {
+    return n;
   }
+  return fibonacci(n - 2) + fibonacci(n - 1);
 }
-var rrr = foo(1);
-print('rrr:');
-print(rrr);
+var i = 1;
+while (i <= 10) {
+  var rrr = fibonacci(i);
+  i = i + 1;
+  print(rrr);
+}
