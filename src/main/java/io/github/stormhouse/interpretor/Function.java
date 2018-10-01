@@ -8,12 +8,15 @@ import java.util.List;
 
 public class Function implements Callable{
     final Stmt.Function declaration;
-    public Function (Stmt.Function declaration) {
+    final Context closure;
+    public Function (Stmt.Function declaration, Context closure) {
         this.declaration = declaration;
+        this.closure = closure;
     }
     @Override
     public Object call(Executor executor, List<Object> arguments) {
-        Context context = new Context(executor.globalContext);
+//        Context context = new Context(executor.globalContext);
+        Context context = new Context(this.closure);
         List<Token> pp = declaration.parameters;
         for (int i=0; i<pp.size(); i++) {
             context.define(pp.get(i).lexeme, arguments.get(i));

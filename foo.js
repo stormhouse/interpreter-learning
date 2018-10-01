@@ -1,12 +1,11 @@
-function fibonacci (n) {
-  if (n <= 1) {
-    return n;
+function makeCounter () {
+  var i = 0;
+  function count () {
+    i = i + 1;
+    print(i);
   }
-  return fibonacci(n - 2) + fibonacci(n - 1);
+  return count;
 }
-var i = 1;
-while (i <= 10) {
-  var rrr = fibonacci(i);
-  i = i + 1;
-  print(rrr);
-}
+var counter = makeCounter();
+counter();
+counter();

@@ -128,6 +128,7 @@ public class Parser {
     }
     private Stmt expressionStatement () {
         Stmt stmt = new Stmt.Expression(expression());
+        consume(SEMICOLON, "expect ;");
         return stmt;
     }
     public Expr expression () {
@@ -140,7 +141,7 @@ public class Parser {
             Expr value = assignment();
             if (expr instanceof Expr.Variable) {
                 expr = new Expr.Assign(((Expr.Variable) expr).name, value);
-                consume(SEMICOLON, "require ; at the end of assign expression");
+//                consume(SEMICOLON, "require ; at the end of assign expression");
             }
         }
         return expr;

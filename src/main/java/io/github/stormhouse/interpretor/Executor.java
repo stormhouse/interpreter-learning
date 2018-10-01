@@ -194,7 +194,8 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
 
     @Override
     public Object visitFunctionStmt(Stmt.Function stmt) {
-        Function function = new Function(stmt);
+        Context c = new Context(this.context);
+        Function function = new Function(stmt, c);
         context.define(stmt.name.lexeme, function);
         return null;
     }
