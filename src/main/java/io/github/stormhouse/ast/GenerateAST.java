@@ -11,6 +11,7 @@ public class GenerateAST {
         String outputDir = "./src/main/java/io/github/stormhouse/ast/";
         defineAST(outputDir, "Expr", Arrays.asList(
                 "Binary   : Expr left, Token operator, Expr right",
+                "Call     : Expr callee, Token paren, List<Expr> arguments",
                 "Logical  : Expr left, Token operator, Expr right",
                 "Grouping : Expr expression",
                 "Literal  : Object value",
@@ -21,9 +22,11 @@ public class GenerateAST {
         defineAST(outputDir, "Stmt", Arrays.asList(
                 "Expression : Expr expr",
                 "Print      : Expr expr",
+                "Return     : Token name, Expr expr",
                 "Var        : Token token, Expr expr",
                 "Block      : List<Stmt> stmts",
                 "If         : Expr condition, Stmt thenBranch, Stmt elseBranch",
+                "Function   : Token name, List<Token> parameters, List<Stmt> body",
                 "While      : Expr condition, Stmt stmt"
         ));
     }

@@ -1,5 +1,6 @@
 package io.github.stormhouse.parser;
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import io.github.stormhouse.ast.Expr;
 import io.github.stormhouse.ast.Stmt;
 import io.github.stormhouse.lexer.Token;
@@ -30,6 +31,9 @@ public class Parser {
         if (match(VAR)) {
             return varDeclaration();
         }
+        if (match(FUNCTION)) {
+            return functionStatement();
+        }
         return statement();
     }
     private Stmt varDeclaration () {
@@ -54,10 +58,29 @@ public class Parser {
         if (match(PRINT)) {
             return printStatement();
         }
+        if (match(RETURN)) {
+            return returnStatement();
+        }
         if (match(LEFT_BRACE)) {
             return new Stmt.Block(block());
         }
         return expressionStatement();
+    }
+    private Stmt functionStatement () {
+        Token name = consume(IDENTIFIER, "");
+        consume(LEFT_PAREN, "");
+        List<Token> parameters = new ArrayList<>();
+        while (!check(RIGHT_PAREN)) {
+            Token p = consume(IDENTIFIER, "");
+            parameters.add(p);
+            while (match(COMMA)) {
+                Token pp = consume(IDENTIFIER, "");
+                parameters.add(pp);
+            }
+        }
+        consume(RIGHT_PAREN, "");
+        consume(LEFT_BRACE, "");
+        return new Stmt.Function(name, parameters, this.block());
     }
     private Stmt whileStatement () {
         consume(LEFT_PAREN, "require ( after if");
@@ -96,6 +119,12 @@ public class Parser {
         Stmt stmt = new Stmt.Print(expression());
         consume(SEMICOLON, "expect ;");
         return stmt;
+    }
+    private Stmt returnStatement () {
+        Token name = previous();
+        Expr expr = this.expression();
+        consume(SEMICOLON, "");
+        return new Stmt.Return(name, expr);
     }
     private Stmt expressionStatement () {
         Stmt stmt = new Stmt.Expression(expression());
@@ -140,7 +169,7 @@ public class Parser {
     }
     private Expr comparison () {
         Expr expr = addition();
-        if (match(LESS, LESS_EQUAL, GREATER, GREATER_EQUAL)) {
+        if (match(LESS, LESS_EQUAL, GREATER, GREATER_EQUAL, EQUAL_EQUAL)) {
             Token operator = previous();
             Expr right = comparison();
             expr = new Expr.Binary(expr, operator, right);
@@ -178,7 +207,38 @@ public class Parser {
         return expr;
     }
     private Expr unary () {
+//        Expr expr = primary();
+        Expr expr = call();
+        return expr;
+    }
+    private Expr call () {
         Expr expr = primary();
+        boolean hasCall = false;
+        while (true) {
+            if (match(TokenType.LEFT_PAREN)) {
+                expr = finishCall(expr);
+                hasCall = true;
+            } else {
+                break;
+            }
+        }
+        if (hasCall) {
+//            consume(SEMICOLON, "expect ;");
+        }
+        return expr;
+    }
+    private Expr finishCall (Expr callee) {
+        List<Expr> arguments = new ArrayList<>();
+        while (!check(RIGHT_PAREN)) {
+            Expr expr = this.expression();
+            arguments.add(expr);
+            while (match(COMMA)) {
+                Expr ep = this.expression();
+                arguments.add(ep);
+            }
+        }
+        Token paren = consume(TokenType.RIGHT_PAREN, "expect ')");
+        Expr expr = new Expr.Call(callee, paren, arguments);
         return expr;
     }
     private Expr primary () {
@@ -201,10 +261,11 @@ public class Parser {
     private void advance () {
         this.current++;
     }
-    private void consume (TokenType type, String errorMessage) {
+    private Token consume (TokenType type, String errorMessage) {
         if (!match(type)) {
             throw new Error("expect: " + type.toString());
         }
+        return previous();
     }
     private Token previous () {
         return this.tokens.get(this.current - 1);

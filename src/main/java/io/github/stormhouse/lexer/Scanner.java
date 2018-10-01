@@ -28,8 +28,10 @@ public class Scanner {
         keywords.put("false" , FALSE);
         keywords.put("var"  , VAR);
         keywords.put("print", PRINT);
+        keywords.put("return", RETURN);
         keywords.put("if", IF);
         keywords.put("else", ELSE);
+        keywords.put("function", FUNCTION);
         keywords.put("while", WHILE);
     }
     public List<Token> scanTokens () {
@@ -41,7 +43,8 @@ public class Scanner {
                 case '(': addToken(LEFT_PAREN); break;
                 case ')': addToken(RIGHT_PAREN); break;
                 case ';': addToken(SEMICOLON); break;
-                case '=': addToken(EQUAL); break;
+                case ',': addToken(COMMA); break;
+                case '=': addToken(match('=') ? EQUAL_EQUAL : EQUAL); break;
                 case '<': addToken(match('=') ? LESS_EQUAL : LESS); break;
                 case '>': addToken(match('=') ? GREATER_EQUAL : GREATER); break;
                 case '&':

@@ -5,12 +5,14 @@ import io.github.stormhouse.ast.Stmt;
 import io.github.stormhouse.lexer.Token;
 import io.github.stormhouse.parser.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.stormhouse.lexer.TokenType.*;
 
 public class Executor implements Expr.Visitor, Stmt.Visitor {
-    private Context context = new Context(null);
+    public final Context globalContext = new Context(null);
+    private Context context = new Context(globalContext);
 
     public void interpret (List<Stmt> stmts) {
         for (Stmt stmt : stmts) {
@@ -22,6 +24,15 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     }
     public Object execute (Expr expr) {
         return expr.accept(this);
+    }
+    public Object executeBlock (List<Stmt> stmts, Context context) {
+        Context p = this.context;
+        this.context = context;
+        for (Stmt s: stmts) {
+            this.execute(s);
+        }
+        this.context = p;
+        return null;
     }
     @Override
     public Object visitBinaryExpr(Expr.Binary expr) {
@@ -44,10 +55,27 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
                     return (double)left < (double)right;
                 }
                 return null;
+            case EQUAL_EQUAL:
+                if (left instanceof Double && right instanceof Double) {
+                    return (double)left == (double)right;
+                }
+                return null;
             default:
                 ;
         }
         return expr.accept(this);
+    }
+
+    @Override
+    public Object visitCallExpr(Expr.Call expr) {
+        Object callee = execute(expr.callee);
+
+        List<Object> arguments = new ArrayList<>();
+        for (Expr e: expr.arguments) {
+            arguments.add(execute(e));
+        }
+        Callable fun = (Callable)callee;
+        return fun.call(this, arguments);
     }
 
     @Override
@@ -145,9 +173,16 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
         Stmt elseBranch = stmt.elseBranch;
         if ((boolean)execute(condition)) {
             execute(ifBranch);
-        } else {
+        } else if (elseBranch != null) {
             execute(elseBranch);
         }
+        return null;
+    }
+
+    @Override
+    public Object visitFunctionStmt(Stmt.Function stmt) {
+        Function function = new Function(stmt);
+        context.define(stmt.name.lexeme, function);
         return null;
     }
 
@@ -183,5 +218,13 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
         Object value = execute(stmt.expr);
         System.out.println(value);
         return null;
+    }
+
+    @Override
+    public Object visitReturnStmt(Stmt.Return stmt) {
+
+        Object value = execute(stmt.expr);
+        throw new Return(value);
+//        return null;
     }
 }

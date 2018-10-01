@@ -8,9 +8,11 @@ public abstract class Stmt {
     public interface Visitor<R> {
         R visitExpressionStmt (Expression stmt);
         R visitPrintStmt (Print stmt);
+        R visitReturnStmt (Return stmt);
         R visitVarStmt (Var stmt);
         R visitBlockStmt (Block stmt);
         R visitIfStmt (If stmt);
+        R visitFunctionStmt (Function stmt);
         R visitWhileStmt (While stmt);
     }
     public static class Expression extends Stmt {
@@ -29,6 +31,17 @@ public abstract class Stmt {
         public <R> R accept (Visitor<R> visitor) {
             return visitor.visitPrintStmt(this);
         }
+        public final Expr expr;
+    }
+    public static class Return extends Stmt {
+        public Return(Token name, Expr expr) {
+            this.name = name;
+            this.expr = expr;
+        }
+        public <R> R accept (Visitor<R> visitor) {
+            return visitor.visitReturnStmt(this);
+        }
+        public final Token name;
         public final Expr expr;
     }
     public static class Var extends Stmt {
@@ -63,6 +76,19 @@ public abstract class Stmt {
         public final Expr condition;
         public final Stmt thenBranch;
         public final Stmt elseBranch;
+    }
+    public static class Function extends Stmt {
+        public Function(Token name, List<Token> parameters, List<Stmt> body) {
+            this.name = name;
+            this.parameters = parameters;
+            this.body = body;
+        }
+        public <R> R accept (Visitor<R> visitor) {
+            return visitor.visitFunctionStmt(this);
+        }
+        public final Token name;
+        public final List<Token> parameters;
+        public final List<Stmt> body;
     }
     public static class While extends Stmt {
         public While(Expr condition, Stmt stmt) {

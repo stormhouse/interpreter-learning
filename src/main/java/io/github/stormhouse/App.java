@@ -16,6 +16,8 @@ public class App {
     public static void main(String[] args) throws IOException {
         if (args.length == 1) {
             runFile(args[0]);
+        } else {
+            runFile("./foo.js");
         }
     }
     public static void runFile(String filePath) throws IOException {
@@ -31,7 +33,7 @@ public class App {
         }
 
         Parser parser = new Parser(tokens);
-        Expr expr = parser.expression();
+//        Expr expr = parser.expression();
         List<Stmt> stmts = parser.parse();
 
         Executor executor = new Executor();
