@@ -3,21 +3,28 @@ package io.github.stormhouse.interpretor;
 import io.github.stormhouse.ast.Expr;
 import io.github.stormhouse.ast.Stmt;
 import io.github.stormhouse.lexer.Token;
-import io.github.stormhouse.parser.Context;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static io.github.stormhouse.lexer.TokenType.*;
 
 public class Executor implements Expr.Visitor, Stmt.Visitor {
-    public final Context globalContext = new Context(null);
+    public final Context globalContext = new Context(null, false);
+    final Map<Expr, Integer> locals = new HashMap<>();
     private Context context = globalContext;
 
     public void interpret (List<Stmt> stmts) {
+        Resolver resolver = new Resolver(this);
+        resolver.resolve(stmts);
         for (Stmt stmt : stmts) {
             execute(stmt);
         }
+    }
+    void resolver (Expr expr, int depth) {
+        locals.put(expr, depth);
     }
     public void execute (Stmt stmt) {
         stmt.accept(this);
@@ -151,26 +158,36 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
 
     @Override
     public Object visitVariableExpr(Expr.Variable expr) {
-        Token name = expr.name;
-        Context ctx = this.context;
-        Object value = null;
-        while (ctx != null) {
-            value = ctx.get(name.lexeme);
-            if (value == null) {
-                ctx = ctx.getParent();
-            } else {
-                break;
-            }
+        return lookupVariable(expr.name, expr);
+//        Token name = expr.name;
+//        Context ctx = this.context;
+//        Object value = null;
+//        while (ctx != null) {
+//            value = ctx.get(name.lexeme);
+//            if (value == null) {
+//                ctx = ctx.getParent();
+//            } else {
+//                break;
+//            }
+//        }
+//        return value;
+    }
+    private Object lookupVariable (Token name, Expr expr) {
+        Integer distance = locals.get(expr);
+        if (distance != null) {
+            return this.context.getAt(distance, name.lexeme);
+        } else {
+            return globalContext.get(name.lexeme);
         }
-        return value;
     }
 
     @Override
     public Object visitBlockStmt(Stmt.Block stmt) {
         List<Stmt> stmts = stmt.stmts;
         Context previous = this.context;
+
         // enter new block context --------------
-        this.context = new Context(previous);
+        this.context = new Context(previous, false);
         for (Stmt s : stmts) {
             execute(s);
         }
@@ -194,7 +211,7 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
 
     @Override
     public Object visitFunctionStmt(Stmt.Function stmt) {
-        Context c = new Context(this.context);
+        Context c = new Context(this.context, true);
         Function function = new Function(stmt, c);
         context.define(stmt.name.lexeme, function);
         return null;

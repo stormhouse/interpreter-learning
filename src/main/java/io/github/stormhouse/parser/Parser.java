@@ -1,6 +1,5 @@
 package io.github.stormhouse.parser;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import io.github.stormhouse.ast.Expr;
 import io.github.stormhouse.ast.Stmt;
 import io.github.stormhouse.lexer.Token;
@@ -9,7 +8,6 @@ import io.github.stormhouse.lexer.TokenType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.stormhouse.lexer.Token.*;
 import static io.github.stormhouse.lexer.TokenType.*;
 
 public class Parser {

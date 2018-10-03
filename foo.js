@@ -1,11 +1,9 @@
-function makeCounter () {
-  var i = 0;
-  function count () {
-    i = i + 1;
-    print(i);
+var a = 'global';
+{
+  function showA () {
+    print(a);
   }
-  return count;
+  showA();
+  var a = 'local';
+  showA();
 }
-var counter = makeCounter();
-counter();
-counter();
