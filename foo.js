@@ -1,9 +1,9 @@
-var a = 'global';
+var a = "global";
 {
-  function showA () {
+  fun showA () {
     print(a);
   }
   showA();
-  var a = 'local';
+  var a = "local";
   showA();
 }

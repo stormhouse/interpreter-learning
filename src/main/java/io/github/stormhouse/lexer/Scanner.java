@@ -1,8 +1,6 @@
 package io.github.stormhouse.lexer;
 
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
-
 import static io.github.stormhouse.Util.*;
 
 import java.util.ArrayList;
