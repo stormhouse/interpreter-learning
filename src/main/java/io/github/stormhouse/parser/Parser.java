@@ -47,6 +47,9 @@ public class Parser {
         return var;
     }
     private Stmt statement () {
+        if (match(COMMENT)) {
+            return commentStatement();
+        }
         if (match(IF)) {
             return ifStatement();
         }
@@ -87,6 +90,10 @@ public class Parser {
         Stmt s = statement();
         return new Stmt.While(condition, s);
 //        return null;
+    }
+    private Stmt commentStatement () {
+        Token token = previous();
+        return new Stmt.Comment(token);
     }
     private Stmt ifStatement () {
         consume(LEFT_PAREN, "require ( after if");

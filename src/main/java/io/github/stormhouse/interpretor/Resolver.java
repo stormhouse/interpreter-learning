@@ -29,6 +29,8 @@ public class Resolver implements Stmt.Visitor, Expr.Visitor{
     }
     @Override
     public Object visitBinaryExpr(Expr.Binary expr) {
+        resolve(expr.left);
+        resolve(expr.right);
         return null;
     }
 
@@ -90,6 +92,8 @@ public class Resolver implements Stmt.Visitor, Expr.Visitor{
 
     @Override
     public Object visitReturnStmt(Stmt.Return stmt) {
+        resolve(stmt.expr);
+//        resolveLocal(stmt.expr, ()stmt.expr);
         return null;
     }
 
@@ -99,6 +103,11 @@ public class Resolver implements Stmt.Visitor, Expr.Visitor{
         if (stmt.expr != null) {
             resolve(stmt.expr);
         }
+        define(stmt.token);
+        return null;
+    }
+    public Object visitVarStmt(Stmt.Var stmt, boolean isInital) {
+        declare(stmt.token);
         define(stmt.token);
         return null;
     }
@@ -115,9 +124,23 @@ public class Resolver implements Stmt.Visitor, Expr.Visitor{
     @Override
     public Object visitBlockStmt(Stmt.Block stmt) {
         beginScope();
+        this.resolveHosit(stmt.stmts);
         resolve(stmt.stmts);
         endScope();
         return null;
+    }
+
+    @Override
+    public Object visitCommentStmt(Stmt.Comment stmt) {
+        return null;
+    }
+
+    void resolveHosit (List<Stmt> stmts) {
+        for (Stmt s : stmts) {
+            if (s instanceof Stmt.Var) {
+                visitVarStmt((Stmt.Var)s, false);
+            }
+        }
     }
     void beginScope () {
         scopes.push(new HashMap<String, Boolean>());
@@ -155,7 +178,10 @@ public class Resolver implements Stmt.Visitor, Expr.Visitor{
     private void resolveLocal(Expr expr, Token name) {
         int ii = scopes.size();
         for (int i=ii-1; i>=0; i--) {
-            this.executor.resolver(expr, ii - 1 -i);
+            Map scope = scopes.get(i);
+            if (scope.containsKey(name.lexeme)) {
+                this.executor.resolver(expr, ii - 1 -i);
+            }
         }
     }
 }

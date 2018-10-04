@@ -14,7 +14,11 @@ import static io.github.stormhouse.lexer.TokenType.*;
 public class Executor implements Expr.Visitor, Stmt.Visitor {
     public final Context globalContext = new Context(null, false);
     final Map<Expr, Integer> locals = new HashMap<>();
+
     private Context context = globalContext;
+    public Context getCurrentContext () {
+        return this.context;
+    }
 
     public void interpret (List<Stmt> stmts) {
         Resolver resolver = new Resolver(this);
@@ -197,6 +201,11 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     }
 
     @Override
+    public Object visitCommentStmt(Stmt.Comment stmt) {
+        return null;
+    }
+
+    @Override
     public Object visitIfStmt(Stmt.If stmt) {
         Expr condition = stmt.condition;
         Stmt ifBranch = stmt.thenBranch;
@@ -211,8 +220,9 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
 
     @Override
     public Object visitFunctionStmt(Stmt.Function stmt) {
-        Context c = new Context(this.context, true);
-        Function function = new Function(stmt, c);
+//        Context c = new Context(this.context, true);
+//        Function function = new Function(stmt, c);
+        Function function = new Function(stmt, this.context);
         context.define(stmt.name.lexeme, function);
         return null;
     }

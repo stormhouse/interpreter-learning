@@ -11,6 +11,7 @@ public abstract class Stmt {
         R visitReturnStmt (Return stmt);
         R visitVarStmt (Var stmt);
         R visitBlockStmt (Block stmt);
+        R visitCommentStmt (Comment stmt);
         R visitIfStmt (If stmt);
         R visitFunctionStmt (Function stmt);
         R visitWhileStmt (While stmt);
@@ -63,6 +64,15 @@ public abstract class Stmt {
             return visitor.visitBlockStmt(this);
         }
         public final List<Stmt> stmts;
+    }
+    public static class Comment extends Stmt {
+        public Comment(Token name) {
+            this.name = name;
+        }
+        public <R> R accept (Visitor<R> visitor) {
+            return visitor.visitCommentStmt(this);
+        }
+        public final Token name;
     }
     public static class If extends Stmt {
         public If(Expr condition, Stmt thenBranch, Stmt elseBranch) {
