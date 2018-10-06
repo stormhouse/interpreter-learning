@@ -1,4 +1,4 @@
 class Foo {}
 print(Foo);
 var foo = new Foo();
-print(foo);
+print(foo.bar);

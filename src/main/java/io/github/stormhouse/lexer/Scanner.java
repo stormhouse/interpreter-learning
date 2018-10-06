@@ -44,6 +44,7 @@ public class Scanner {
                 case ')': addToken(RIGHT_PAREN); break;
                 case ';': addToken(SEMICOLON); break;
                 case ',': addToken(COMMA); break;
+                case '.': addToken(DOT); break;
                 case '=': addToken(match('=') ? EQUAL_EQUAL : EQUAL); break;
                 case '<': addToken(match('=') ? LESS_EQUAL : LESS); break;
                 case '>': addToken(match('=') ? GREATER_EQUAL : GREATER); break;

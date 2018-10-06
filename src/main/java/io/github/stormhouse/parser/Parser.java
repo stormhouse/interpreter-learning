@@ -232,17 +232,15 @@ public class Parser {
     }
     private Expr call () {
         Expr expr = primary();
-        boolean hasCall = false;
         while (true) {
             if (match(TokenType.LEFT_PAREN)) {
                 expr = finishCall(expr);
-                hasCall = true;
+            } else if (match(TokenType.DOT)) {
+                Token name = consume(IDENTIFIER, "");
+                expr = new Expr.Get(expr, name);
             } else {
                 break;
             }
-        }
-        if (hasCall) {
-//            consume(SEMICOLON, "expect ;");
         }
         return expr;
     }

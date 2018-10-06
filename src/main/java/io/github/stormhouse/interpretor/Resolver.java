@@ -65,6 +65,12 @@ public class Resolver implements Stmt.Visitor, Expr.Visitor{
     }
 
     @Override
+    public Object visitGetExpr(Expr.Get expr) {
+        resolve(expr.object);
+        return null;
+    }
+
+    @Override
     public Object visitAssignExpr(Expr.Assign expr) {
         resolve(expr.right);
         resolveLocal(expr, expr.name);
