@@ -1,6 +1,7 @@
 class Foo {}
-print(Foo);
+class Bar {}
 var foo = new Foo();
-print(foo.bar);
-foo.bar = 123;
-print(foo.bar);
+var bar = new Bar();
+bar.n = 123;
+foo.bar = bar;
+print(foo.bar.n);

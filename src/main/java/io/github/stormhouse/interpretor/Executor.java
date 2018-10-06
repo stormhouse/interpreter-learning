@@ -143,9 +143,9 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     public Object visitGetExpr(Expr.Get expr) {
         Object v = null;
         Token property = expr.name;
-        Expr.Variable e = (Expr.Variable)expr.object;
-        Token name = e.name;
-        Object obj = lookupVariable(name, expr);
+        Object obj = this.execute(expr.object);
+//        Token name = (Token) e;
+//        Object obj = lookupVariable(name, expr);
         if (obj instanceof Instance) {
             Instance o = (Instance) obj;
             v = o.get(property.lexeme);
