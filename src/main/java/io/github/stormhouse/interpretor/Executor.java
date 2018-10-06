@@ -154,6 +154,21 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     }
 
     @Override
+    public Object visitSetExpr(Expr.Set expr) {
+        Object v = null;
+        Token property = expr.name;
+        Expr.Variable e = (Expr.Variable)expr.object;
+        Token name = e.name;
+        Object obj = lookupVariable(name, expr);
+        v = this.execute(expr.value);
+        if (obj instanceof Instance) {
+            Instance o = (Instance) obj;
+            o.set(property.lexeme, v);
+        }
+        return null;
+    }
+
+    @Override
     public Object visitAssignExpr(Expr.Assign expr) {
         Token name = expr.name;
         Object value = execute(expr.right);

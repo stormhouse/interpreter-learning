@@ -157,6 +157,9 @@ public class Parser {
             Expr value = assignment();
             if (expr instanceof Expr.Variable) {
                 expr = new Expr.Assign(((Expr.Variable) expr).name, value);
+            } else if (expr instanceof Expr.Get) {
+                Expr.Get get = (Expr.Get)expr;
+                expr = new Expr.Set(get.object, get.name, value);
             }
         }
         if (match(NEW)) {

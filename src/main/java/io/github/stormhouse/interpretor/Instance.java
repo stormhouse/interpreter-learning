@@ -12,6 +12,9 @@ public class Instance {
     public Object get (String key) {
         return properties.get(key);
     }
+    public Object set (String key, Object value) {
+        return properties.put(key, value);
+    }
     @Override
     public String toString() {
         return "<instance of class " + name.name + ">";

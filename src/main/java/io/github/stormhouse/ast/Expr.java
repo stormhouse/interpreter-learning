@@ -13,6 +13,7 @@ public abstract class Expr {
         R visitLiteralExpr (Literal expr);
         R visitUnaryExpr (Unary expr);
         R visitGetExpr (Get expr);
+        R visitSetExpr (Set expr);
         R visitAssignExpr (Assign expr);
         R visitVariableExpr (Variable expr);
     }
@@ -94,6 +95,19 @@ public abstract class Expr {
         }
         public final Expr object;
         public final Token name;
+    }
+    public static class Set extends Expr {
+        public Set(Expr object, Token name, Expr value) {
+            this.object = object;
+            this.name = name;
+            this.value = value;
+        }
+        public <R> R accept (Visitor<R> visitor) {
+            return visitor.visitSetExpr(this);
+        }
+        public final Expr object;
+        public final Token name;
+        public final Expr value;
     }
     public static class Assign extends Expr {
         public Assign(Token name, Expr right) {
