@@ -157,9 +157,7 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     public Object visitSetExpr(Expr.Set expr) {
         Object v = null;
         Token property = expr.name;
-        Expr.Variable e = (Expr.Variable)expr.object;
-        Token name = e.name;
-        Object obj = lookupVariable(name, expr);
+        Object obj = this.execute(expr.object);
         v = this.execute(expr.value);
         if (obj instanceof Instance) {
             Instance o = (Instance) obj;
