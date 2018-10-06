@@ -10,6 +10,7 @@ public abstract class Stmt {
         R visitPrintStmt (Print stmt);
         R visitReturnStmt (Return stmt);
         R visitVarStmt (Var stmt);
+        R visitClassStmt (Class stmt);
         R visitBlockStmt (Block stmt);
         R visitCommentStmt (Comment stmt);
         R visitIfStmt (If stmt);
@@ -55,6 +56,17 @@ public abstract class Stmt {
         }
         public final Token token;
         public final Expr expr;
+    }
+    public static class Class extends Stmt {
+        public Class(Token name, List<Stmt> methods) {
+            this.name = name;
+            this.methods = methods;
+        }
+        public <R> R accept (Visitor<R> visitor) {
+            return visitor.visitClassStmt(this);
+        }
+        public final Token name;
+        public final List<Stmt> methods;
     }
     public static class Block extends Stmt {
         public Block(List<Stmt> stmts) {

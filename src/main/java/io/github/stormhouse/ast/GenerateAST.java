@@ -24,6 +24,7 @@ public class GenerateAST {
                 "Print      : Expr expr",
                 "Return     : Token name, Expr expr",
                 "Var        : Token token, Expr expr",
+                "Class      : Token name, List<Stmt> methods",
                 "Block      : List<Stmt> stmts",
                 "Comment    : Token name",
                 "If         : Expr condition, Stmt thenBranch, Stmt elseBranch",

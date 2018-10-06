@@ -255,6 +255,13 @@ public class Executor implements Expr.Visitor, Stmt.Visitor {
     }
 
     @Override
+    public Object visitClassStmt(Stmt.Class stmt) {
+        Class clz = new Class(stmt.name.lexeme);
+        this.context.define(stmt.name.lexeme, clz);
+        return null;
+    }
+
+    @Override
     public Object visitPrintStmt(Stmt.Print stmt) {
         Object value = execute(stmt.expr);
         System.out.println(value);

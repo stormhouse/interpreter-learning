@@ -32,7 +32,17 @@ public class Parser {
         if (match(FUNCTION)) {
             return functionStatement();
         }
+        if (match(CLASS)) {
+            return classStatement();
+        }
         return statement();
+    }
+    private Stmt classStatement () {
+
+        Token name = consume(IDENTIFIER, "");
+        consume(LEFT_BRACE, "");
+        List<Stmt> methods = this.block();
+        return new Stmt.Class(name, methods);
     }
     private Stmt varDeclaration () {
         consume(IDENTIFIER, "declaration require identifier");
@@ -137,7 +147,8 @@ public class Parser {
         return stmt;
     }
     public Expr expression () {
-        return assignment();
+        Expr expr = assignment();
+        return expr;
     }
     public Expr assignment () {
 //        Expr expr = equality();
@@ -146,8 +157,10 @@ public class Parser {
             Expr value = assignment();
             if (expr instanceof Expr.Variable) {
                 expr = new Expr.Assign(((Expr.Variable) expr).name, value);
-//                consume(SEMICOLON, "require ; at the end of assign expression");
             }
+        }
+        if (match(NEW)) {
+            expr = call();
         }
         return expr;
     }

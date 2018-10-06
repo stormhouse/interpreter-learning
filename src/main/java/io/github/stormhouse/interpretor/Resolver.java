@@ -106,6 +106,14 @@ public class Resolver implements Stmt.Visitor, Expr.Visitor{
         define(stmt.token);
         return null;
     }
+
+    @Override
+    public Object visitClassStmt(Stmt.Class stmt) {
+        declare(stmt.name);
+        define(stmt.name);
+        return null;
+    }
+
     public Object visitVarStmt(Stmt.Var stmt, boolean isInital) {
         declare(stmt.token);
         define(stmt.token);

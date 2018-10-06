@@ -22,15 +22,17 @@ public class Scanner {
 
     public Scanner (String rawCode) {
         this.rawCode = rawCode;
-        keywords.put("true" , TRUE);
-        keywords.put("false" , FALSE);
-        keywords.put("var"  , VAR);
-        keywords.put("print", PRINT);
-        keywords.put("return", RETURN);
-        keywords.put("if", IF);
-        keywords.put("else", ELSE);
+        keywords.put("true",     TRUE);
+        keywords.put("false",    FALSE);
+        keywords.put("var",      VAR);
+        keywords.put("print",    PRINT);
+        keywords.put("return",   RETURN);
+        keywords.put("if",       IF);
+        keywords.put("else",     ELSE);
         keywords.put("function", FUNCTION);
-        keywords.put("while", WHILE);
+        keywords.put("while",    WHILE);
+        keywords.put("class",    CLASS);
+        keywords.put("new",      NEW);
     }
     public List<Token> scanTokens () {
         while (!isAtEnd()) {
