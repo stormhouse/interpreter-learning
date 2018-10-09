@@ -1,12 +1,10 @@
 import lexer from './lexer/index.js'
-import { Lexer } from './lexer/Lexer.js'
-import Parser from './parser/tdop.js'
-import { TokenType } from './lexer/TokenType.js'
+import Lexer from './lexer/Lexer.js'
+import Parser from './parser/Parser.js'
+import TokenType from './lexer/TokenType.js'
 // import evaluator from './evaluator/index.js'
-import Executor from './executor/index.js'
+import Executor from './executor/Executor.js'
 import Debugger from './debugger/index.js'
-console.log(TokenType.PLUS)
-console.log()
 /*
 代码: 字符串
   123
@@ -34,7 +32,7 @@ console.log()
 const codes = [
   `var foo = 123 * 456 - 789 * 5 + 9 * 5;
 function bar () {
-  print(11111111111);
+  print('---------');
 }
 bar();
 {
@@ -59,20 +57,20 @@ print(foo);
 // }
 // (123 + 234) + 3;`
 ]
-console.log(codes[0])
+//console.log(codes[0])
 const vv = codes.map((code) => {
   const lexer = new Lexer(code)
   const tokens = lexer.lex()
   const d = new Debugger(tokens)
   d.draw()
-  console.log((tokens))
+  //console.log((tokens))
   const parser = new Parser(tokens)
   const trees = parser.parse()
-   console.log(trees)
+  //console.log(trees)
   const executor = new Executor(trees)
   const result = executor.run()
   return result;
 })
 
-console.log(vv)
-console.log(JSON.stringify(vv))
+//console.log(vv)
+//console.log(JSON.stringify(vv))

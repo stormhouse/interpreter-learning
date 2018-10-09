@@ -14,7 +14,7 @@ class Debugger {
     const ratio = devicePixelRatio / backingStoreRatio
 
     var w = 400 // $("#code").width();
-    var h = 200 // $("#code").height();
+    var h = 300 // $("#code").height();
 
   //要将 canvas 的宽高设置成容器宽高的 2 倍
   // var canvas = document.createElement("canvas");
@@ -44,7 +44,7 @@ class Debugger {
       if (token.type == TokenType.RIGHT_BRACE) {
         baseX -= 10
       }
-      const t = new Text(context, (token.literal) + ' ', ColorMap[token.type], x + baseX, y)
+      const t = new Text(context, token.text(), ColorMap[token.type], x + baseX, y)
       if (token.type == TokenType.LEFT_BRACE) {
         baseX += 10
       }

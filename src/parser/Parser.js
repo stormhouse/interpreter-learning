@@ -16,12 +16,13 @@ import {
 } from './Expr.js'
 
 /*
-statment       --> var | function | print | exprStmt | block
-function       --> "function" IDENTIFIER "(" parameters? ")" block
-parameters     --> IDENTIFIER ("," IDENTIFIER)*
-block          --> "{" statment* "}"
+statment       --> var | function | print | block | assign | exprStmt
 var            --> "var" IDENTIFIER ("=" expression)? ";"
+function       --> "function" IDENTIFIER "(" parameters? ")" block
 print          --> "print(" expression ");"
+block          --> "{" statment* "}"
+assign         --> IDENTIFIER "=" expression ";"
+parameters     --> IDENTIFIER ("," IDENTIFIER)*
 exprStmt       --> expression ";"
 expression     --> addition
 addition       --> multiplication ("+" | "-") multiplication | multiplication
@@ -160,7 +161,6 @@ class Parser {
     if (!this.check(TokenType.RIGHT_PAREN)) {
 
     }
-    debugger
     this.consume(TokenType.RIGHT_PAREN)
     return new StmtCall(name, args)
   }
@@ -169,7 +169,10 @@ class Parser {
     if (this.isMatch(TokenType.TURE)) {
       return new ExprLiteral('true')
     }
-    if (this.isMatch(TokenType.NUMBER)) {
+    if (this.isMatch(TokenType.FALSE)) {
+      return new ExprLiteral('false')
+    }
+    if (this.isMatch([TokenType.NUMBER, TokenType.STRING])) {
       return new ExprLiteral(this.previous().literal)
     }
     if (this.isMatch(TokenType.LEFT_PAREN)) {
